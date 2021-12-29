@@ -18,6 +18,7 @@ namespace MyBlog.Services.Extensions
         public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddDbContext<MyBlogContext>(); //AddDbContext'te ozunde bir Scope'tur...
+
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IArticleService, ArticleManager>();

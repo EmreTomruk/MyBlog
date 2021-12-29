@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace MyBlog.Entities.Concrete
 {
-    public class User:EntityBase,IEntity
+    public class User : EntityBase, IEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

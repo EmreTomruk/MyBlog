@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 
 using System.Threading.Tasks;
-using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Shared.Utilities.Results.Abstract;
 using System.Collections.Generic;
