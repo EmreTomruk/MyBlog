@@ -26,6 +26,7 @@ namespace ProgrammersBlog.Mvc
             {
                 app.UseDeveloperExceptionPage();
             }
+
             //newww!!!
 
             app.UseRouting();
