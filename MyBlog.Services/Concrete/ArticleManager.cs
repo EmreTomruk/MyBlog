@@ -45,7 +45,8 @@ namespace MyBlog.Services.Concrete
             if (result)
             {
                 var article = await _unitOfWork.Articles.GetAsync(a => a.Id == articleId);
-                article.ModifiedByName=modifiedByName;
+
+                article.ModifiedByName = modifiedByName;
                 article.IsDeleted = true;
                 article.ModifiedDate = DateTime.Now;
 
