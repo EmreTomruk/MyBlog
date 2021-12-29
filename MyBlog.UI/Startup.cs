@@ -26,7 +26,7 @@ namespace ProgrammersBlog.Mvc
             {
                 app.UseDeveloperExceptionPage();
             }
-            //Hadi bakalým!!!
+            
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
