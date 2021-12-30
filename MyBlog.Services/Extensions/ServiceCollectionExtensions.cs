@@ -15,7 +15,7 @@ namespace MyBlog.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection)
+        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection) //
         {
             serviceCollection.AddDbContext<MyBlogContext>(); //AddDbContext'te ozunde bir Scope'tur...
 

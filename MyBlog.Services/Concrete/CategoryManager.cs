@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using AutoMapper;
 using MyBlog.Data.Abstract;
 using MyBlog.Entities.Concrete;
@@ -50,7 +51,13 @@ namespace MyBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir kategori bulunamadı.", null);
+
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
+            {
+                Categories = null,
+                ResultStatus = ResultStatus.Error,
+                Message = "Hiçbir kategori bulunamadı."
+            });
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAllByNonDeleted()
@@ -63,7 +70,7 @@ namespace MyBlog.Services.Concrete
                     Categories = categories,
                     ResultStatus = ResultStatus.Success
                 });
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir kategori bulunamadı.", null);
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", null);
         }
 
         public async Task<IResult> Add(CategoryAddDto categoryAddDto, string createdByName)
@@ -73,7 +80,8 @@ namespace MyBlog.Services.Concrete
             category.CreatedByName= createdByName;
             category.ModifiedByName = createdByName;
 
-            await _unitOfWork.Categories.AddAsync(category).ContinueWith(t => _unitOfWork.SaveAsync()); //Task'le devam eder...
+            await _unitOfWork.Categories.AddAsync(category); 
+            await _unitOfWork.SaveAsync();
 
             return new Result(ResultStatus.Success, $"{categoryAddDto.Name} adlı kategori başarıyla eklenmiştir.");
         }
@@ -83,8 +91,9 @@ namespace MyBlog.Services.Concrete
             var category = _mapper.Map<Category>(categoryUpdateDto);
 
             category.ModifiedByName = modifiedByName;
-          
-            await _unitOfWork.Categories.UpdateAsync(category).ContinueWith(t => _unitOfWork.SaveAsync());
+
+            await _unitOfWork.Categories.UpdateAsync(category);
+            await _unitOfWork.SaveAsync();
 
             return new Result(ResultStatus.Success, $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir.");            
         }
@@ -99,7 +108,8 @@ namespace MyBlog.Services.Concrete
                 category.ModifiedByName = modifiedByName;
                 category.ModifiedDate = DateTime.Now;
 
-                await _unitOfWork.Categories.UpdateAsync(category).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Categories.UpdateAsync(category);
+                await _unitOfWork.SaveAsync();
 
                 return new Result(ResultStatus.Success, message: $"{category.Name} adlı kategori başarıyla silinmiştir.");
             }
@@ -112,7 +122,8 @@ namespace MyBlog.Services.Concrete
 
             if (category != null)
             {
-                await _unitOfWork.Categories.DeleteAsync(category).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Categories.DeleteAsync(category);
+            await _unitOfWork.SaveAsync();
 
                 return new Result(ResultStatus.Success, message: $"{category.Name} adlı kategori başarıyla veritabanından silinmiştir.");
             }
@@ -129,7 +140,7 @@ namespace MyBlog.Services.Concrete
                     Categories = categories,
                     ResultStatus = ResultStatus.Success
                 });
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir kategori bulunamadı.", null);
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", null);
         }
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using MyBlog.Entities.Dtos;
 using MyBlog.Services.Abstract;
 using MyBlog.Shared.Utilities.Results.Abstract;
-
 using MyBlog.Data.Abstract;
 using MyBlog.Shared.Utilities.Results.Concrete;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
@@ -33,7 +33,8 @@ namespace MyBlog.Services.Concrete
             article.ModifiedByName = createdByName;
             article.UserId = 1;
 
-            await _unitOfWork.Articles.AddAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+            await _unitOfWork.Articles.AddAsync(article);
+            await _unitOfWork.SaveAsync();
 
             return new Result(ResultStatus.Success, $"{articleAddDto.Title} başlıklı makale başarıyla eklenmiştir.");
         }
@@ -50,7 +51,8 @@ namespace MyBlog.Services.Concrete
                 article.IsDeleted = true;
                 article.ModifiedDate = DateTime.Now;
 
-                await _unitOfWork.Articles.UpdateAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Articles.UpdateAsync(article);
+                await _unitOfWork.SaveAsync();
 
                 return new Result(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silinmiştir.");
             }
@@ -139,7 +141,6 @@ namespace MyBlog.Services.Concrete
                 });
             }
             return new DataResult<ArticleListDto>(ResultStatus.Error, "Makaleler bulunamadı.", null);
-
         }
 
         public async Task<IResult> HardDelete(int articleId)
@@ -150,12 +151,12 @@ namespace MyBlog.Services.Concrete
             {
                 var article = await _unitOfWork.Articles.GetAsync(a => a.Id == articleId);
 
-                await _unitOfWork.Articles.DeleteAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Articles.DeleteAsync(article);
+                await _unitOfWork.SaveAsync();
 
                 return new Result(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla veritabanından silinmiştir.");
             }
             return new Result(ResultStatus.Success, "Böyle bir makale bulunamadı.");
-
         }
 
         public async Task<IResult> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
@@ -164,7 +165,8 @@ namespace MyBlog.Services.Concrete
 
             article.ModifiedByName = modifiedByName;
 
-            await _unitOfWork.Articles.UpdateAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+            await _unitOfWork.Articles.UpdateAsync(article);
+            await _unitOfWork.SaveAsync();
 
             return new Result(ResultStatus.Success, $"{articleUpdateDto.Title} başlıklı makale başarıyla güncellenmiştir.");
         }

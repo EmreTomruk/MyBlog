@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using MyBlog.Entities.Dtos;
 using MyBlog.Shared.Utilities.Results.Abstract;
-using System.Collections.Generic;
 
 namespace MyBlog.Services.Abstract
 {

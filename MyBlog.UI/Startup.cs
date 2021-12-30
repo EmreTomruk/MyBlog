@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using MyBlog.Services.AutoMapper.Profiles;
 using MyBlog.Services.Extensions;
 
 namespace MyBlog.Mvc
@@ -19,7 +20,7 @@ namespace MyBlog.Mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            services.AddAutoMapper(typeof(Startup)); //Derleme esnasinda AutoMapper Startup'taki siniflari tarar ve Mapping siniflarini ekler.  
+            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  
             services.LoadMyServices();
         }
 
@@ -29,7 +30,7 @@ namespace MyBlog.Mvc
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseStatusCodePages(); //Bulunmayan bir sayfaya gidildiginde hata kodunu verir... 
+                app.UseStatusCodePages(); //Bulunmayan bir sayfaya gidildiginde hata kodunu/mesajini verir... 
             }
 
             app.UseStaticFiles();
