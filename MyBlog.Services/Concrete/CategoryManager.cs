@@ -50,7 +50,7 @@ namespace MyBlog.Services.Concrete
 
             if (categories.Count > -1)
             {
-                return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
+                return new DataResult<CategoryListDto>(ResultStatus.Error, new CategoryListDto
                 {
                     Categories = categories,
                     ResultStatus = ResultStatus.Success
