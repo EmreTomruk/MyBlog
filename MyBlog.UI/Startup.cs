@@ -23,7 +23,7 @@ namespace MyBlog.Mvc
         {
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt =>
             {
-                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); //
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; //Nested Objelerde bu objeler birbirini referans ettiginde bunlari sorunsuz bicimde cevirmemizi saglar(category-makale)...
             }); 
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  

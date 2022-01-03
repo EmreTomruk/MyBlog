@@ -78,7 +78,7 @@ namespace MyBlog.Services.Concrete
             return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", null);
         }
 
-        public async Task<IDataResult<CategoryDto>>  Add(CategoryAddDto categoryAddDto, string createdByName)
+        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createdByName)
         {
             var category = _mapper.Map<Category>(categoryAddDto);
 
