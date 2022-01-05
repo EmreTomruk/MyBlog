@@ -26,6 +26,7 @@ namespace MyBlog.Mvc
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); //
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; //Nested Objelerde bu objeler birbirini referans ettiginde bunlari sorunsuz bicimde cevirmemizi saglar(category-makale)...
             }); 
+
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  
             services.LoadMyServices();
         }
@@ -50,6 +51,7 @@ namespace MyBlog.Mvc
                     areaName: "Admin",
                     pattern: "Admin/{controller=Home}/{action=Index}/{id?}" 
                     );
+
                 endpoints.MapDefaultControllerRoute();
             });
         }

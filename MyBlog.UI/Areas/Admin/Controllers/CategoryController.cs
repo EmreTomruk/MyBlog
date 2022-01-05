@@ -24,7 +24,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllByNonDeleted();
 
             return View(result.Data);
         }
@@ -48,6 +48,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         CategoryDto = result.Data,
                         CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto) //Eklenen categoryAddDto string'e cevirilir...
                     });
+
                     return Json(categoryAddAjaxModel);
                 }
             }
@@ -56,17 +57,44 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto) //Hata mesajlari vs. buradan verecegiz...
             });
+
             return Json(categoryAddAjaxErrorModel);          
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int categoryId)
+        {
+            var result = await _categoryService.GetCategoryUpdateDto(categoryId);
+
+            if (result.ResultStatus == ResultStatus.Success)
+            {
+                return PartialView("_CategoryUpdatePartial", result.Data);
+            }
+
+            else
+            {
+                return NotFound();
+            }
         }
 
         public async Task<JsonResult> GetAllCategories()
         {
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllByNonDeleted();
             var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions //Objemiz icinde birbirini referans eden objeler oldugu icin bu yapiyi kullandik...
             {
                 ReferenceHandler = ReferenceHandler.Preserve
             });
+
             return Json(categories);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int categoryId)
+        {
+            var result = await _categoryService.Delete(categoryId, "Emre Tomruk");
+            var deletedCategory = JsonSerializer.Serialize(result.Data); //deletedCategory icinde silinmis olan kategori bir CategoryDto olarak yer alir...
+
+            return Json(deletedCategory);
         }
     }
 }
