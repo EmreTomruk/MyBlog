@@ -5,18 +5,14 @@
     Layout = "_Layout";
     ViewBag.Title = "Kategoriler Index";
 }
+
 @if (Model.ResultStatus == ResultStatus.Success)
 {
     <div id="modalPlaceHolder" aria-hidden="true"></div>
     <div class="card mb-4 mt-2">
-                            <div class="card-header">
-                                <i class="fas fa-table mr-1"></i>
-                                Kategoriler
-                            </div>
+    <div class="card-header"><i class="fas fa-table mr-1"></i>Kategoriler</div>
         <div class="card-body">
-            <div class="spinner-border" role="status" style="display: none;">
-                <span class="sr-only">Yükleniyor...</span>
-            </div>
+            <div class="spinner-border" role="status" style="display: none;"><span class="sr-only">Yükleniyor...</span></div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="categoriesTable" width="100%" cellspacing="0">
                     <thead>
@@ -74,6 +70,9 @@
             </div>
         </div>
      </div>
+     <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" style="{position: fixed; bottom: 250px; right: 50px; display: none; rgb(72, 72, 72); 
+        box-sizing: border-box; font-size: 14px; font-weight: 600; letter-spacing: -0.28px; text-decoration: none;}" role="button"><i class="fas fa-chevron-up">
+        </i><span> Başa Dön</span></a>
 }
 @if (Model.ResultStatus == ResultStatus.Error)
 {

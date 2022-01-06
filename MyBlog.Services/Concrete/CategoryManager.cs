@@ -106,7 +106,8 @@ namespace MyBlog.Services.Concrete
 
         public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
         {
-            var category = _mapper.Map<Category>(categoryUpdateDto);
+            var oldCategory = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryUpdateDto.Id); //Her guncellemede category'ye yeni bir CreatedDate ve CreatedByName eklenmeyecek... 
+            var category = _mapper.Map<CategoryUpdateDto, Category>(categoryUpdateDto, oldCategory);
 
             category.ModifiedByName = modifiedByName;
 
@@ -115,9 +116,9 @@ namespace MyBlog.Services.Concrete
 
             return new DataResult<CategoryDto>(ResultStatus.Success, $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir.", new CategoryDto
             {
-                Category=updatedCategory,
-                ResultStatus=ResultStatus.Success,
-                Message=$"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir."
+                Category = updatedCategory,
+                ResultStatus = ResultStatus.Success,
+                Message = $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir."
             });            
         }
 

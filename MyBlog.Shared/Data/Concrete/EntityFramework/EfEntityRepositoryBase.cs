@@ -50,7 +50,7 @@ namespace MyBlog.Shared.Data.Concrete.EntityFramework
                 query = query.Where(predicate);
             }
 
-            if (includeProperties.Any())
+            else if (includeProperties.Any())
             {
                 foreach (var includeProperty in includeProperties)
                 {
@@ -69,7 +69,7 @@ namespace MyBlog.Shared.Data.Concrete.EntityFramework
                 query = query.Where(predicate);
             }
 
-            if (includeProperties.Any())
+            else if (includeProperties.Any())
             {
                 foreach (var includeProperty in includeProperties)
                 {
