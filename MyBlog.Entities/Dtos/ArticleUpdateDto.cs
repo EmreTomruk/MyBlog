@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using MyBlog.Shared.Entities.Abstract;
 using MyBlog.Entities.Concrete;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;

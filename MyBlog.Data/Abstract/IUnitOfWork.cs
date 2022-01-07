@@ -12,8 +12,7 @@ namespace MyBlog.Data.Abstract
         IArticleRepository Articles { get; } // unitofwork.Articles
         ICategoryRepository Categories { get; }
         ICommentRepository Comments { get; }
-        IRoleRepository Roles { get; }
-        IUserRepository Users { get; } // _unitOfWork.Categories.AddAsync();
+
         // _unitOfWork.Categories.AddAsync(category);
         //_unitOfWork.Users.AddAsync(user);
         //_unitOfWork.SaveAsync();

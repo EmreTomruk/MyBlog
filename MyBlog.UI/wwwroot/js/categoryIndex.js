@@ -1,17 +1,23 @@
-﻿$(document).ready(function() {
-
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 50) {
+﻿$(document).ready(function ()
+{
+    $(window).scroll(function ()
+    {
+        if ($(this).scrollTop() > 50)
+        {
             $('#back-to-top').fadeIn();
-        } else {
+        }
+        else
+        {
             $('#back-to-top').fadeOut();
         }
     });
     // scroll body to 0px on click
 
-    $('#back-to-top').click(function() {
-        $('body, html').animate({
-            scrollTop: 0
+    $('#back-to-top').click(function ()
+    {
+        $('body, html').animate(
+        {
+           scrollTop: 0
         }, 400);
         return false;
     });
@@ -30,45 +36,47 @@
                     id: "btnAdd",
                 },
                 className: 'btn btn-success',
-                action: function(e, dt, node, config) {
+                action: function (e, dt, node, config) {
                 }
             },
             {
                 text: 'Yenile',
                 className: 'btn btn-warning',
-                action: function(e, dt, node, config) {
+                action: function (e, dt, node, config)
+                {
                     $.ajax({
                         type: 'GET',
                         url: '/Admin/Category/GetAllCategories/',
                         contentType: "application/json",
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $('#categoriesTable').hide();
                             $('.spinner-border').show();
                         },
-                        success: function(data) {
+                        success: function (data) {
                             const categoryListDto = jQuery.parseJSON(data); //Gelen string veri(Json) objeye cevirilir...
                             console.log(categoryListDto); //Gelen categoryListDto objelerini console'da goruntuleyebilmek icin yazdik...
-                            if (categoryListDto.ResultStatus === 0) {
-                                let tableBody = "";
-                                $.each(categoryListDto.Categories.$values, function(index, category) { //Json'a Parse edilecegi icin $values kullandik...
+                            if (categoryListDto.ResultStatus === 0)
+                            {
+                                let tableBody = String.Empty;
+                                $.each(categoryListDto.Categories.$values, function (index, category) { //Json'a Parse edilecegi icin $values kullandik...
 
                                     tableBody += `
-                                                <tr>
-                                                    <td>${category.Id}</td>
-                                                    <td>${category.Name}</td>
-                                                    <td>${category.Description}</td>
-                                                    <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
-                                                    <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
-                                                    <td>${category.Note}</td>
-                                                    <td>${convertToShortDate(category.CreatedDate)}</td>
-                                                    <td>${category.CreatedByName}</td>
-                                                    <td>${convertToShortDate(category.ModifiedDate)}</td>
-                                                    <td>${category.ModifiedByName}</td>
-                                                    <td>
-                                                        <button class="btn btn-primary btn-sm btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span></button>
-                                                        <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span></button>
-                                                    </td>
-                                                 </tr>`;
+                                        <tr>
+                                            <td>${category.Id}</td>
+                                            <td>${category.Name}</td>
+                                            <td>${category.Description}</td>
+                                            <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
+                                            <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
+                                            <td>${category.Note}</td>
+                                            <td>${convertToShortDate(category.CreatedDate)}</td>
+                                            <td>${category.CreatedByName}</td>
+                                            <td>${convertToShortDate(category.ModifiedDate)}</td>
+                                            <td>${category.ModifiedByName}</td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span></button>
+                                                <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span></button>
+                                            </td>
+                                        </tr>`;
                                 });
                                 $('#categoriesTable > tbody').replaceWith(tableBody);
                                 $('.spinner-border').hide();
@@ -77,7 +85,7 @@
                                 toastr.error(`${categoryListDto.Message}`, 'İşlem Başarısız!');
                             }
                         },
-                        error: function(err) {
+                        error: function (err) {
                             console.log(err);
                             $('.spinner-border').hide();
                             $('#categoriesTable').fadeIn(1000);
@@ -123,13 +131,13 @@
 
     // Ajax GET / Getting the _CategoryAddPartial as Modal Form starts from here. 
 
-    $(function() {
-
+    $(function ()
+    {
         const url = '/Admin/Category/Add';
         const placeHolderDiv = $('#modalPlaceHolder');
-        $('#btnAdd').click(function() {
-
-            $.get(url).done(function(data) { //modalPlaceHolder div'ine modal'imizi yerlestirdik...
+        $('#btnAdd').click(function ()
+        {
+            $.get(url).done(function (data) { //modalPlaceHolder div'ine modal'imizi yerlestirdik...
 
                 placeHolderDiv.html(data); //"data" : "_CategoryAddPartial"'dir. Burada placeHolderDiv'in html'ini _CategoryAddPartial ile doldurduk..
                 placeHolderDiv.find(".modal").modal('show'); //placeHolderDiv icinde class=modal olan div'i bul, onu placeHolderDiv'in modal'i yap ve goster...
@@ -139,21 +147,22 @@
 
         // Ajax POST / Posting the FormData as CategoryAddDto starts from here. 
 
-        placeHolderDiv.on('click', '#btnSave', function(event) {
+        placeHolderDiv.on('click', '#btnSave', function (event) {
 
             event.preventDefault(); //Kendi click islemini onlemis olduk(aksi halde sayfa yenilenecekti)... 
             const form = $('#form-category-add');
-            const actionUrl = form.attr('action'); //action=_CategoryAddPartial.cshtml sayfasindaki 11. satir asp-action="Add"'tir...
-            const dataToSend = form.serialize(); 
-            $.post(actionUrl, dataToSend).done(function(data) { //buradaki data Json formatindadir...
-
+            const actionUrl = form.attr('action'); //action=_CategoryAddPartial.cshtml sayfasindaki asp-action="Add"'tir...
+            const dataToSend = form.serialize();
+            $.post(actionUrl, dataToSend).done(function (data) //Buradaki data, dataToSend ile Json formatinda Controller'a gonderdigimiz verilerin, Controller'da islenip bize yine Json formatinda donmus halidir...
+            { 
                 console.log(data);
-                const categoryAddAjaxModel = jQuery.parseJSON(data);
+                const categoryAddAjaxModel = jQuery.parseJSON(data); //Data objeye cevirilir...
                 console.log(categoryAddAjaxModel);
                 const newFormBody = $('.modal-body', categoryAddAjaxModel.CategoryAddPartial); //categoryAddAjaxModel icindeki CategoryAddPartial'deki '.modal-body' yi al...
                 placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                 const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-                if (isValid) {
+                if (isValid)
+                {
                     placeHolderDiv.find('.modal').modal('hide');
                     const newTableRow = `
                         <tr name="${categoryAddAjaxModel.CategoryDto.Category.Id}">
@@ -177,9 +186,12 @@
                     $('#categoriesTable').append(newTableRowObject);
                     newTableRowObject.fadeIn(3500);
                     toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`, 'Başarılı İşlem!');
-                } else {
-                    let summaryText = "";
-                    $('#validation-summary > ul > li').each(function() { //#validation-summary'in icindeki ul'nin icindeki li'ler(Bizim ModelState != true ise 'validation-summary' div'i icinde bir ul ve onun icinde de li'ler olusur.)
+                } 
+                else
+                {
+                    let summaryText = String.Empty;
+                    $('#validation-summary > ul > li').each(function () //#validation-summary'in icindeki ul'nin icindeki li'ler(Bizim ModelState != true ise 'validation-summary' div'i icinde bir ul ve onun icinde de li'ler olusur...
+                    {
                         let text = $(this).text(); //this: li'ler(foreach ile dondugumuz her li)
                         summaryText = `*${text}\n`;
                     });
@@ -192,13 +204,14 @@
 
     //Ajax POST / Deleting a Category starts from here 
 
-    $(document).on('click', '.btn-delete', function(event) {
-
+    $(document).on('click', '.btn-delete', function (event)
+    {
         event.preventDefault(); //butonun kendi gorevi varsa, o gorevi iptal eder...
         const id = $(this).attr('data-id'); //this=basilan butondur
         const tableRow = $(`[name="${id}"]`);
         const categoryName = tableRow.find('td:eq(1)').text();
-        Swal.fire({
+        Swal.fire(
+        {
             title: 'Silmek istediğinize emin misiniz?',
             text: `${categoryName} adlı kategori silinicektir!`,
             icon: 'warning',
@@ -209,31 +222,39 @@
             cancelButtonText: 'Hayır, silmek istemiyorum.'
         }).then((result) => { //Evet butonuna basilirsa result='true' olur...
 
-            if (result.isConfirmed) {
-
-                $.ajax({
+            if (result.isConfirmed)
+            {
+                $.ajax(
+                {
                     type: 'POST',
                     dataType: 'json',
                     data: { categoryId: id },
                     url: '/Admin/Category/Delete',
-                    success: function(data) {
+                    success: function (data) 
+                    {
                         const categoryDto = jQuery.parseJSON(data);
-                        if (categoryDto.ResultStatus === 0) {
+
+                        if (categoryDto.ResultStatus === 0)
+                        {
                             Swal.fire(
                                 'Silindi!',
                                 `${categoryDto.Category.Name} adlı kategori başarıyla silinmiştir.`,
                                 'success'
                             );
                             tableRow.fadeOut(3500);
-                        } else {
-                            Swal.fire({
+                        }
+                        else
+                        {
+                            Swal.fire(
+                            {
                                 icon: 'error',
                                 title: 'Başarısız İşlem!',
                                 text: `${categoryDto.Message}`,
                             });
                         }
                     },
-                    error: function(err) {
+                    error: function (err) 
+                    {
                         console.log(err);
                         toastr.error(`${err.responseText}`, "Hata!")
                     }
@@ -243,39 +264,43 @@
     });
     // Ajax POST / Updating a Category starts from here
 
-    $(function() {
+    $(function ()
+    {
         const url = '/Admin/Category/Update';
         const placeHolderDiv = $('#modalPlaceHolder');
-        $(document).on('click', '.btn-update', function(event) {
+        $(document).on('click', '.btn-update', function (event)
+        {
             event.preventDefault();
             const id = $(this).attr('data-id'); //Bu event'in gerceklestigi butonun Id'si(o da zaten categoryId'dir) alindi......
-            $.get(url, { categoryId: id }).done(function(data) { //Gidecegi yerde beklenen categoryId=id yapmis olduk...
+            $.get(url, { categoryId: id }).done(function (data) //Gidecegi yerde beklenen categoryId=id yapmis olduk...
+            { 
 
                 placeHolderDiv.html(data); //placeHolderDiv icindeki div'i gonderdigimiz data ile doldur(ancak gizli oldugu icin goremiyoruz)......
                 placeHolderDiv.find('.modal').modal('show'); //Gizli olan modal'i gosterir...
 
-            }).fail(function() {
+            }).fail(function ()
+            {
                 toastr.error("Bir hata oluştu...");
             });
         });
 
-        placeHolderDiv.on('click', '#btnUpdate', function(event) {
-
+        placeHolderDiv.on('click', '#btnUpdate', function (event)
+        {
             event.preventDefault();
             const form = $('#form-category-update');
             const actionUrl = form.attr('action'); //'action' attribute icinde bir url var(/Admin/Category/Update) ve biz bu url'ye formumuzu gonderecegiz...
             const dataToSend = form.serialize(); //'dataToSend' gonderecegimiz veridir. dataToSend categoryUpdateDto'dur...
 
-            $.post(actionUrl, dataToSend).done(function(data) { //Form icindeki bilgileri Ajax/Post islemi ile action'a gonderecegiz...
-
+            $.post(actionUrl, dataToSend).done(function (data) //Form icindeki bilgileri Ajax/Post islemi ile action'a gonderecegiz...
+            { 
                 const categoryUpdateAjaxModel = jQuery.parseJSON(data); //Gelen datayi objeye cevirdik...
                 console.log(categoryUpdateAjaxModel);
                 const newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial); //categoryUpdateAjaxModel icindeki CategoryUpdatePartial'dan .modal-body'yi sectik(gelen PartialView'i ModalForm icine eklemeliyiz/degistirmeliyiz)...
                 placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                 const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
 
-                if (isValid) {
-
+                if (isValid)
+                {
                     placeHolderDiv.find('.modal').modal('hide');
                     const newTableRow = `
                         <tr name="${categoryUpdateAjaxModel.CategoryDto.Category.Id}">
@@ -302,21 +327,22 @@
                     newTableRowObject.fadeIn(3500);
                     toastr.success(`${categoryUpdateAjaxModel.CategoryDto.Message}`, "Başarılı İşlem!")
                 }
-
-                else {
-
-                    let summaryText = "";
-                    $('#validation-summary > ul > li').each(function () {
-                        let text = $(this).text(); 
+                else
+                {
+                    let summaryText = String.Empty;
+                    $('#validation-summary > ul > li').each(function ()
+                    {
+                        let text = $(this).text();
                         summaryText = `*${text}\n`;
                     });
                     toastr.warning(summaryText);
                 }
-
-            }).fail(function (response) {
-
+            }).fail(function (response)
+            {
                 console.log(response);
             });
         })
     });
-}); 
+    // Ajax POST / Updating a Category ends from here
+
+});
