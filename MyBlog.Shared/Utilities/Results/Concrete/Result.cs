@@ -30,5 +30,5 @@ namespace MyBlog.Shared.Utilities.Results.Concrete
         public string Message { get; }
         public Exception Exception { get; }
         // new Result(ResultStatus.Error,exception.message,exception)
-    }
+   }
 }
