@@ -28,7 +28,7 @@ namespace MyBlog.Mvc
             });
 
             services.AddSession(); //Kullanici siteye giris yaptigi anda acilan-server'da olusturulan oturumdur. Global bir degisken gibi dusunulebilir...
-            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  
+            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile), typeof(UserProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  
             services.LoadMyServices();
             services.ConfigureApplicationCookie(options =>
             {
@@ -42,7 +42,7 @@ namespace MyBlog.Mvc
                     SecurePolicy = CookieSecurePolicy.SameAsRequest //Http ise Http, Https ise Https'tir. Projeyi canliya almadan once "CookieSecurePolicy.Always" (Https -> Https) yap...
                 };
                 options.SlidingExpiration = true; //Kullaniciya siteye girdikten sonra sure tanir, bu sure zarfinda kullanicinin tekrar giris yapmasina gerek yoktur(ayni cookie bilgileri uzerinden). Sure tamamlandiktan sonra kullanici tekrar giris yaptiginda sure tekrar uzatilir...
-                options.ExpireTimeSpan = System.TimeSpan.FromDays(7); //Eger kullanici 3. gun tekrar girerse tekrar 7 gun uzatilir...
+                options.ExpireTimeSpan = System.TimeSpan.FromDays(7); //Eger kullanici 3. gun tekrar girerse, sure 7 gun uzatilir...
                 options.AccessDeniedPath = new PathString("/Admin/User/AccessDenied"); //Sisteme giris yapmis ama yetkisi olmayan bir yere giris yapmaya calisan kullanici icin...
             });
         }
@@ -59,8 +59,8 @@ namespace MyBlog.Mvc
             app.UseSession(); //Siralama onemli!!!
             app.UseStaticFiles();
             app.UseRouting(); 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthentication(); //Kimlik dogrulamasi
+            app.UseAuthorization(); //Yetki kontrolu(Admin, User...)
 
             app.UseEndpoints(endpoints =>
             {

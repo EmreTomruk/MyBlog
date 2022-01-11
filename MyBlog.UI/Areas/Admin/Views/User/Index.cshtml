@@ -43,7 +43,7 @@
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
                                 <td>@user.PhoneNumber</td>
-                                <td>@user.Picture</td>
+                                <td><img src="~/img/@user.Picture" alt="@user.UserName" class="my-image-table"></td>
                                 <td>
                                     <button class="btn btn-primary btn-sm btn-update" data-id="@user.Id"><span class="fas fa-edit"></span></button>
                                     <button class="btn btn-danger btn-sm btn-delete" data-id="@user.Id"><span class="fas fa-minus-circle"></span></button>
@@ -55,9 +55,10 @@
             </div>
         </div>
      </div>
-     <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" style="{position: fixed; bottom: 250px; right: 50px; display: none; rgb(72, 72, 72); 
+@*     <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" style="{position: fixed; bottom: 250px; right: 50px; display: none; rgb(72, 72, 72); 
         box-sizing: border-box; font-size: 14px; font-weight: 600; letter-spacing: -0.28px; text-decoration: none;}" role="button"><i class="fas fa-chevron-up">
-        </i><span> Başa Dön</span></a>
+        </i><span> Başa Dön</span>
+     </a>*@
 }
 @if (Model.ResultStatus == ResultStatus.Error)
 {

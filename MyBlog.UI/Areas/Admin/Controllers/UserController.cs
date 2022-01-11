@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+
 using System.IO;
-using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
-using ImageProcessor;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +33,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             _env = env;
             _mapper = mapper;
         }
+
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync(); //Bu islemle tum kullanicilar gelir. Bunu UserListDto icine attiktan sonra View'e gonderecegiz...
@@ -42,6 +43,22 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 Users = users,
                 ResultStatus = ResultStatus.Success
             });
+        }
+
+        public async Task<JsonResult> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync(); 
+
+            var userListDto = JsonSerializer.Serialize(new UserListDto
+            {
+                Users = users,
+                ResultStatus = ResultStatus.Success
+            }, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+
+            return Json(userListDto);
         }
 
         public IActionResult Add()
@@ -73,20 +90,22 @@ namespace MyBlog.UI.Areas.Admin.Controllers
 
                     return Json(userAddAjaxViewModel);
                 }
-                else
+
+                else //Identity tarafinda bir hata alinirsa bunu Front-End'de donebilmek icin kullanacagiz...
                 {
-                    foreach (var error in result.Errors) //Identity tarafinda bir hata alirsak...
+                    foreach (var error in result.Errors) //Donen hatalari ekliyoruz...
                     {
                         ModelState.AddModelError("", error.Description);
                     }
+
                     var userAddAjaxErrorViewModel = JsonSerializer.Serialize(new UserAddAjaxViewModel
                     {
-                        UserAddDto = userAddDto,
+                        UserAddDto = userAddDto, //Hatalarin dpnmesi icin gerekli...
                         UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
                     });
 
                     return Json(userAddAjaxErrorViewModel);
-                }               
+                }
             }
 
             var userAddAjaxModelStateErrorViewModel = JsonSerializer.Serialize(new UserAddAjaxViewModel //!ModelState.IsValid ise
@@ -97,6 +116,61 @@ namespace MyBlog.UI.Areas.Admin.Controllers
 
             return Json(userAddAjaxModelStateErrorViewModel);
         }
+
+        public async Task<JsonResult> Delete(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                var deletedUser = JsonSerializer.Serialize(new UserDto
+                {
+                    User = user,
+                    ResultStatus = ResultStatus.Success,
+                    Message = $"{user.UserName} adlı kullanıcı başarıyla silinmiştir."                
+                });
+
+                return Json(deletedUser);
+            }
+
+            else
+            {
+                string errorMessages = String.Empty;
+
+                foreach (var error in result.Errors)
+                {
+                    errorMessages = $"*{error.Description}\n";
+                }
+            
+                var deleteduserErrorModel = JsonSerializer.Serialize(new UserDto
+                {
+                    User = user,
+                    ResultStatus = ResultStatus.Error,
+                    Message = $"{user.UserName} adlı kullanıcı silinememiştir.\n{errorMessages}"
+                    
+                });
+
+                return Json(deleteduserErrorModel);
+            }     
+        }
+
+        public async Task<PartialViewResult> Update(int userId)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId); //FindByIdAsync() metodu da kullanilabilirdi...
+            var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+
+            return PartialView("_UserUpdatePartial", userUpdateDto);
+        }
+
+
+        //public async Task<PartialViewResult> Update(int userId)
+        //{
+        //    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId); //FindByIdAsync() metodu da kullanilabilirdi...
+        //    var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+
+        //    return PartialView("_UserUpdatePartial", userUpdateDto);
+        //}
 
         public async Task<string> ImageUpload(UserAddDto userAddDto)
         {

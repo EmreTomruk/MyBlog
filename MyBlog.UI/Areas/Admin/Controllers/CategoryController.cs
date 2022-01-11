@@ -41,7 +41,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 var result = await _categoryService.Add(categoryAddDto, "Emre Tomruk");
 
-                if (result.ResultStatus==ResultStatus.Success) //Yeni model icerisinde bunu kullaniciya(Front-End'e gonderiyoruz...)
+                if (result.ResultStatus == ResultStatus.Success) //Yeni model icerisinde bunu kullaniciya(Front-End'e gonderiyoruz...)
                 {
                     var categoryAddAjaxModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel
                     {

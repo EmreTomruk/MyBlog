@@ -8,7 +8,8 @@ namespace MyBlog.Services.AutoMapper.Profiles
     {
         public UserProfile()
         {
-            CreateMap<UserAddDto, User>();
+            CreateMap<UserAddDto, User>(); //User doner...
+            CreateMap<User, UserUpdateDto>(); //UserUpdateDto doner...
         }
     }
 }
