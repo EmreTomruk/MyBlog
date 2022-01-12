@@ -41,17 +41,21 @@
                             {
                                 $.each(userListDto.Users.$values, function (index, user)  //Json'a Parse edilecegi icin $values kullandik...
                                 {
-                                    dataTable.row.add([
+                                    const newTableRow = dataTable.row.add([
                                         user.Id,
                                         user.UserName,
                                         user.Email,
                                         user.PhoneNumber,
-                                        `<img src="/img/${user.Picture}" alt="${user.UserName}" style="max-height:50px; max-width:50px;">`,
+                                        `<img src="/img/${user.Picture}" alt="${user.UserName}" class="my-image-table">`,
 
                                         `<button class="btn btn-primary btn-sm btn-update" data-id="${user.Id}"><span class="fas fa-edit"></span></button>
                                          <button class="btn btn-danger btn-sm btn-delete" data-id="${user.Id}"><span class="fas fa-minus-circle"></span></button>`
-                                    ]);
+                                    ]).node();
+
+                                    const jqueryTableRow = $(newTableRow);
+                                    jqueryTableRow.attr('name', `${user.Id}`);
                                 });
+
                                 dataTable.draw();
                                 $('.spinner-border').hide();
                                 $('#usersTable').fadeIn(1400);
@@ -114,23 +118,25 @@
         const placeHolderDiv = $('#modalPlaceHolder');
         $('#btnAdd').click(function ()
         {
-            $.get(url).done(function (data) { //modalPlaceHolder div'ine modal'imizi yerlestirdik...
-
-                placeHolderDiv.html(data); //"data" : "_CategoryAddPartial"'dir. Burada placeHolderDiv'in html'ini _CategoryAddPartial ile doldurduk..
+            $.get(url).done(function (data) //modalPlaceHolder div'ine modal'imizi(User Controller-Add Action(get)'dan donen) yerlestirdik...
+            { 
+                placeHolderDiv.html(data); //"data" : "_UserAddPartial"'dir. Burada placeHolderDiv'in html'ini _UserAddPartial ile doldurduk..
                 placeHolderDiv.find(".modal").modal('show'); //placeHolderDiv icinde class=modal olan div'i bul, onu placeHolderDiv'in modal'i yap ve goster...
             });
         });
         // Ajax GET / Getting the _UserAddPartial as Modal Form ends here.
 
-        // Ajax POST / Posting the FormData as UseAddDto starts from here. 
+        // Ajax POST / Posting the FormData as UserAddDto starts from here. 
 
         placeHolderDiv.on('click', '#btnSave', function (event)
         {
             event.preventDefault(); //Kendi click islemini onlemis olduk(aksi halde sayfa yenilenecekti)... 
             const form = $('#form-user-add');
-            const actionUrl = form.attr('action'); //action=_CategoryAddPartial.cshtml sayfasindaki asp-action="Add"'tir...
+            const actionUrl = form.attr('action'); //action=_UserAddPartial.cshtml sayfasindaki asp-action="Add"'tir...
             const dataToSend = new FormData(form.get(0));
-            $.ajax({
+
+            $.ajax(
+            {
                 url: actionUrl,
                 type: 'Post',
                 data: dataToSend,
@@ -142,26 +148,32 @@
                     console.log(data);
                     const userAddAjaxModel = jQuery.parseJSON(data); //Data objeye cevirilir...
                     console.log(userAddAjaxModel);
-                    const newFormBody = $('.modal-body', userAddAjaxModel.UserAddPartial); //categoryAddAjaxModel icindeki CategoryAddPartial'deki '.modal-body' yi al...
+                    const newFormBody = $('.modal-body', userAddAjaxModel.UserAddPartial); //userAddAjaxModel icindeki UserAddPartial'deki '.modal-body' yi al...
                     placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                     const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-                    if (isValid) {
+
+                    if (isValid)
+                    {
                         placeHolderDiv.find('.modal').modal('hide');
 
-                        dataTable.row.add([
+                        const newTableRow = dataTable.row.add([
                             userAddAjaxModel.UserDto.User.Id,
                             userAddAjaxModel.UserDto.User.UserName,
                             userAddAjaxModel.UserDto.User.Email,
                             userAddAjaxModel.UserDto.User.PhoneNumber,
-                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.UserName}" style="max-height:50px; max-width:50px;">`,
+                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.UserName}" class="my-image-table">`,
 
                             `<button class="btn btn-primary btn-sm btn-update" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
                              <button class="btn btn-danger btn-sm btn-delete" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
-                        ]).draw();
-
+                        ]).node();
+                        const jqueryTableRow = $(newTableRow);
+                        jqueryTableRow.attr('name', `${userAddAjaxModel.UserDto.User.Id}`);
+                        dataTable.row(newTableRow).draw();
                         toastr.success(`${userAddAjaxModel.UserDto.Message}`, 'Başarılı İşlem!');
                     }
-                    else {
+
+                    else
+                    {
                         let summaryText = String.Empty;
                         $('#validation-summary > ul > li').each(function () //#validation-summary'in icindeki ul'nin icindeki li'ler(Bizim ModelState != true ise 'validation-summary' div'i icinde bir ul ve onun icinde de li'ler olusur...
                         {
@@ -188,6 +200,7 @@
         const id = $(this).attr('data-id'); //this=basilan butondur
         const tableRow = $(`[name="${id}"]`);
         const userName = tableRow.find('td:eq(1)').text();
+
         Swal.fire(
         {
             title: 'Silmek istediğinize emin misiniz?',
@@ -198,8 +211,8 @@
             cancelButtonColor: '#d33',
             confirmButtonText: 'Evet, silmek istiyorum.',
             cancelButtonText: 'Hayır, silmek istemiyorum.'
-        }).then((result) => { //Evet butonuna basilirsa result='true' olur...
-
+        }).then((result) => //Evet butonuna basilirsa result='true' olur...
+        { 
             if (result.isConfirmed)
             {
                 $.ajax(
@@ -221,6 +234,7 @@
                             );
                             dataTable.row(tableRow).remove(userDto.User).draw();
                         }
+
                         else
                         {
                             Swal.fire(
@@ -231,6 +245,7 @@
                             });
                         }
                     },
+
                     error: function (err) 
                     {
                         console.log(err);
@@ -249,13 +264,11 @@
         $(document).on('click', '.btn-update', function (event)
         {
             event.preventDefault();
-            const id = $(this).attr('data-id'); //Bu event'in gerceklestigi butonun Id'si(o da zaten categoryId'dir) alindi......
-            $.get(url, { userId: id }).done(function (data) //Gidecegi yerde beklenen categoryId=id yapmis olduk...
+            const id = $(this).attr('data-id'); //Bu event'in gerceklestigi butonun Id'si(o da zaten userId'dir) alindi......
+            $.get(url, { userId: id }).done(function (data) //Gidecegi yerde beklenen userId=id yapmis olduk...
             { 
-
                 placeHolderDiv.html(data); //placeHolderDiv icindeki div'i gonderdigimiz data ile doldur(ancak gizli oldugu icin goremiyoruz)......
                 placeHolderDiv.find('.modal').modal('show'); //Gizli olan modal'i gosterir...
-
             }).fail(function ()
             {
                 toastr.error("Bir hata oluştu...");
@@ -268,61 +281,61 @@
         placeHolderDiv.on('click', '#btnUpdate', function (event)
         {
             event.preventDefault();
-            const form = $('#form-category-update');
-            const actionUrl = form.attr('action'); //'action' attribute icinde bir url var(/Admin/Category/Update) ve biz bu url'ye formumuzu gonderecegiz...
-            const dataToSend = form.serialize(); //'dataToSend' gonderecegimiz veridir. dataToSend categoryUpdateDto'dur...
+            const form = $('#form-user-update');
+            const actionUrl = form.attr('action'); //'action' attribute icinde bir url var(/Admin/User/Update) ve biz bu url'ye formumuzu gonderecegiz...
+            const dataToSend = new FormData(form.get(0));
 
-            $.post(actionUrl, dataToSend).done(function (data) //Form icindeki bilgileri Ajax/Post islemi ile action'a gonderecegiz...
-            { 
-                const categoryUpdateAjaxModel = jQuery.parseJSON(data); //Gelen datayi objeye cevirdik...
-                console.log(categoryUpdateAjaxModel);
-                const newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial); //categoryUpdateAjaxModel icindeki CategoryUpdatePartial'dan .modal-body'yi sectik(gelen PartialView'i ModalForm icine eklemeliyiz/degistirmeliyiz)...
-                placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
-                const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-
-                if (isValid)
-                {
-                    placeHolderDiv.find('.modal').modal('hide');
-                    const newTableRow = `
-                        <tr name="${categoryUpdateAjaxModel.CategoryDto.Category.Id}">
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Id}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Name}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Description}</td>
-                            <td>${convertFirstLetterToUpperCase(categoryUpdateAjaxModel.CategoryDto.Category.IsActive.toString())}</td>
-                            <td>${convertFirstLetterToUpperCase(categoryUpdateAjaxModel.CategoryDto.Category.IsDeleted.toString())}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Note}</td>
-                            <td>${convertToShortDate(categoryUpdateAjaxModel.CategoryDto.Category.CreatedDate)}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.CreatedByName}</td>
-                            <td>${convertToShortDate(categoryUpdateAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.ModifiedByName}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm btn-update" data-id="${categoryUpdateAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-edit"></span></button>
-                                <button class="btn btn-danger btn-sm btn-delete" data-id="${categoryUpdateAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-minus-circle"></span></button>
-                            </td>
-                        </tr>`;
-
-                    const newTableRowObject = $(newTableRow);
-                    const categoryTableRow = $(`[name="${categoryUpdateAjaxModel.CategoryDto.Category.Id}"]`); //categoryTableRow eski kategori bilgileridir...
-                    newTableRowObject.hide();
-                    categoryTableRow.replaceWith(newTableRowObject);
-                    newTableRowObject.fadeIn(3500);
-                    toastr.success(`${categoryUpdateAjaxModel.CategoryDto.Message}`, "Başarılı İşlem!")
-                }
-                else
-                {
-                    let summaryText = String.Empty;
-                    $('#validation-summary > ul > li').each(function ()
-                    {
-                        let text = $(this).text();
-                        summaryText = `*${text}\n`;
-                    });
-                    toastr.warning(summaryText);
-                }
-            }).fail(function (response)
+            $.ajax(
             {
-                console.log(response);
+                url: actionUrl,
+                type: 'Post',
+                data: dataToSend,
+                processData: false,
+                contentType: false,
+                success: function (data) //Form icindeki bilgileri Ajax/Post islemi ile action'a gonderecegiz...
+                {
+                    const userUpdateAjaxModel = jQuery.parseJSON(data); //Gelen datayi objeye cevirdik...
+                    console.log(userUpdateAjaxModel);
+                    const id = userUpdateAjaxModel.UserDto.User.Id;
+                    const tableRow = $(`[name="${id}"]`);
+                    const newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial); //userUpdateAjaxModel icindeki UserUpdatePartial'dan .modal-body'yi sectik(gelen PartialView'i ModalForm icine eklemeliyiz/degistirmeliyiz)...
+                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                    const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
+
+                    if (isValid)
+                    {
+                        placeHolderDiv.find('.modal').modal('hide');
+                        dataTable.row(tableRow).data([
+                            userUpdateAjaxModel.UserDto.User.Id,
+                            userUpdateAjaxModel.UserDto.User.UserName,
+                            userUpdateAjaxModel.UserDto.User.Email,
+                            userUpdateAjaxModel.UserDto.User.PhoneNumber,
+                            `<img src="/img/${userUpdateAjaxModel.UserDto.User.Picture}" alt="${userUpdateAjaxModel.UserDto.User.UserName}" class="my-image-table">`,
+
+                            `<button class="btn btn-primary btn-sm btn-update" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                             <button class="btn btn-danger btn-sm btn-delete" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
+                        ]);
+                        tableRow.attr("name", `${id}`);
+                        dataTable.row(tableRow).invalidate(); //dataTable'a tableRow'daki degisiklikleri bildiririz...
+                        toastr.success(`${userUpdateAjaxModel.UserDto.Message}`, "Başarılı İşlem!")
+                    }
+                    else
+                    {
+                        let summaryText = String.Empty;
+                        $('#validation-summary > ul > li').each(function ()
+                        {
+                            let text = $(this).text();
+                            summaryText = `*${text}\n`;
+                        });
+                        toastr.warning(summaryText);
+                    }
+                },
+                error: function (error)
+                {
+                    console.log(error);
+                }
             });
-        })
+        });
     });
     // Ajax POST / Updating a User ends from here
 

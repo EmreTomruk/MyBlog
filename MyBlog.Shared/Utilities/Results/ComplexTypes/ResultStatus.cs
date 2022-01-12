@@ -8,9 +8,9 @@ namespace MyBlog.Shared.Utilities.Results.ComplexTypes
 {
     public enum ResultStatus
     {
-        Success = 0,
+        Success = 0, //ResultStatus.Success
         Error = 1,
-        Warning = 2, // ResultStatus.Warning
-        Info = 3 // ResultStatus.Info
+        Warning = 2, 
+        Info = 3 
     }
 }
