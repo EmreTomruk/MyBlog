@@ -11,7 +11,7 @@
                 <div class="card-header"><h3 class="text-center font-weight-light my-4"><span class="fas fa-house-user"></span> Giriş Yap</h3></div>
                 <div class="card-body">
                     <form asp-controller="User" asp-action="Login" method="post">
-                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div asp-validation-summary="All" class="text-danger"></div> @*Hata mesajlarini ekrana yazdirir...*@
                         <div class="form-group">
                             <label class="small mb-1" asp-for="Email">Email</label>
                             <input class="form-control py-4" asp-for="Email" type="email" placeholder="Lütfen e-posta adresinizi giriniz..." />

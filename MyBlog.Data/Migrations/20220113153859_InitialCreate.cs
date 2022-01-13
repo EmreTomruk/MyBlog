@@ -246,19 +246,42 @@ namespace MyBlog.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Categories",
-                columns: new[] { "Id", "CreatedByName", "CreatedDate", "Description", "IsActive", "IsDeleted", "ModifiedByName", "ModifiedDate", "Name", "Note" },
-                values: new object[] { 1, "InitialCreate", new DateTime(2022, 1, 7, 17, 15, 31, 763, DateTimeKind.Local).AddTicks(2065), "C# Programlama Dili ile ilgili güncellemeler", true, false, "InitialCreate", new DateTime(2022, 1, 7, 17, 15, 31, 763, DateTimeKind.Local).AddTicks(2887), "C#", "C# Blog Kategorisi" });
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { 1, "28db2988-21cc-48ba-848c-91fea06c3d65", "Admin", "ADMIN" },
+                    { 2, "4805d587-1dcc-4881-98ca-1438c83a2a7d", "Editor", "EDITOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { 1, 0, "8683901d-6a42-401f-9abc-d77aa70b3e86", "adminuser@gmail.com", true, false, null, "ADMINUSER@GMAIL.COM", "ADMINUSER", "AQAAAAEAACcQAAAAELTqhGyd1SUhSAz9Sf8GCna+8RRl7BnJHADpHCF48QCaiFvGkKN/QjqN2JygWIWCFQ==", "+905555555555", true, "adminuser.png", "65703df5-064b-41c6-9640-bcaf8b694480", false, "adminuser" },
+                    { 2, 0, "9b7fecd1-e9d6-4d70-b44f-fb92edd454ab", "editoruser@gmail.com", true, false, null, "EDITORUSER@GMAIL.COM", "EDITORUSER", "AQAAAAEAACcQAAAAELAIqVWB9vJwC71XjHfDUxddtW7ln0q113mP1jNUhKgc1fjnsRJoTnhvDPaJ1S50jg==", "+905555555555", true, "editoruser.png", "004e0b09-b31d-4288-86ed-4fb23e51d494", false, "editoruser" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "CreatedByName", "CreatedDate", "Description", "IsActive", "IsDeleted", "ModifiedByName", "ModifiedDate", "Name", "Note" },
-                values: new object[] { 2, "InitialCreate", new DateTime(2022, 1, 7, 17, 15, 31, 763, DateTimeKind.Local).AddTicks(3751), "JavaScript Programlama Dili ile ilgili güncellemeler", true, false, "InitialCreate", new DateTime(2022, 1, 7, 17, 15, 31, 763, DateTimeKind.Local).AddTicks(3753), "JavaScript", "JavaScript Blog Kategorisi" });
+                values: new object[,]
+                {
+                    { 1, "InitialCreate", new DateTime(2022, 1, 13, 18, 38, 58, 846, DateTimeKind.Local).AddTicks(8870), "C# Programlama Dili ile ilgili güncellemeler", true, false, "InitialCreate", new DateTime(2022, 1, 13, 18, 38, 58, 846, DateTimeKind.Local).AddTicks(9931), "C#", "C# Blog Kategorisi" },
+                    { 2, "InitialCreate", new DateTime(2022, 1, 13, 18, 38, 58, 847, DateTimeKind.Local).AddTicks(673), "JavaScript Programlama Dili ile ilgili güncellemeler", true, false, "InitialCreate", new DateTime(2022, 1, 13, 18, 38, 58, 847, DateTimeKind.Local).AddTicks(675), "JavaScript", "JavaScript Blog Kategorisi" },
+                    { 3, "InitialCreate", new DateTime(2022, 1, 13, 18, 38, 58, 847, DateTimeKind.Local).AddTicks(681), "MS SQL Server 2019 ile ilgili güncellemeler", true, false, "InitialCreate", new DateTime(2022, 1, 13, 18, 38, 58, 847, DateTimeKind.Local).AddTicks(682), "MS SQL Server", "MS SQL Server 2019 Blog Kategorisi" }
+                });
 
             migrationBuilder.InsertData(
-                table: "Categories",
-                columns: new[] { "Id", "CreatedByName", "CreatedDate", "Description", "IsActive", "IsDeleted", "ModifiedByName", "ModifiedDate", "Name", "Note" },
-                values: new object[] { 3, "InitialCreate", new DateTime(2022, 1, 7, 17, 15, 31, 763, DateTimeKind.Local).AddTicks(3758), "MS SQL Server 2019 ile ilgili güncellemeler", true, false, "InitialCreate", new DateTime(2022, 1, 7, 17, 15, 31, 763, DateTimeKind.Local).AddTicks(3760), "MS SQL Server", "MS SQL Server 2019 Blog Kategorisi" });
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 2, 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_CategoryId",

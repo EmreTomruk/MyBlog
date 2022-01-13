@@ -55,32 +55,34 @@ namespace MyBlog.Data.Concrete.EntityFramework.Mappings
             var adminUser = new User
             {
                 Id = 1,
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
+                UserName = "adminuser",
+                NormalizedUserName = "ADMINUSER",
                 Email="adminuser@gmail.com",
                 NormalizedEmail = "ADMINUSER@GMAIL.COM",
                 PhoneNumber = "+905555555555",
-                Picture = "adminUser.png",
+                Picture = "adminuser.png",
                 EmailConfirmed = true,  
                 PhoneNumberConfirmed = true,
-                SecurityStamp = new Guid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(format:"D") //Veritabaninda bu degerler Guid olarak olusur.D: arasında "-" olusur...
             };
-            adminUser.PasswordHash = CreatePasswordHash(adminUser, "adminuser");
+            adminUser.PasswordHash = CreatePasswordHash(adminUser, "Aasd123+-@1");
 
             var editorUser = new User
             {
                 Id = 2,
                 UserName = "editoruser",
-                NormalizedUserName = "EDITOR",
+                NormalizedUserName = "EDITORUSER",
                 Email = "editoruser@gmail.com",
                 NormalizedEmail = "EDITORUSER@GMAIL.COM",
                 PhoneNumber = "+905555555555",
-                Picture = "editoruserUser.png",
+                Picture = "editoruser.png",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                SecurityStamp = new Guid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(format:"D")
             };
-            editorUser.PasswordHash = CreatePasswordHash(editorUser, "editoruser");
+            editorUser.PasswordHash = CreatePasswordHash(editorUser, "Aasd123+-@2");
+
+            builder.HasData(adminUser, editorUser);
         }
         private string CreatePasswordHash(User user, string password)
         {

@@ -68,19 +68,18 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, userLoginDto.RememberMe, false); //userLoginDto.RememberMe(isPersistent): Flag indicating whether the sign-in cookie should persist after the browser is closed.
 
-                    if (result.Succeeded)
-                    {
+                    if (result.Succeeded) 
                         return RedirectToAction("Index", "Home");
-                    }
+
                     else
                     {
-                        ModelState.AddModelError("", "E-posta veya şifreniz yanlıştır...");
+                        ModelState.AddModelError(String.Empty, "E-posta veya şifreniz yanlıştır...");
                         return View("UserLogin");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "E-posta veya şifreniz yanlıştır...");
+                    ModelState.AddModelError(String.Empty, "E-posta veya şifreniz yanlıştır...");
                     return View("UserLogin");
                 }
             }
@@ -309,6 +308,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             if (System.IO.File.Exists(fileToDelete))
             {
                 System.IO.File.Delete(fileToDelete);
+
                 return true;
             }
 
