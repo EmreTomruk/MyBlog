@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MyBlog.Entities.Concrete;
-using MyBlog.Shared.Data.Abstract;
+using MyBlog.Shared.Entities.Abstract;
 
-namespace MyBlog.Data.Abstract
+namespace MyBlog.Entities.Dtos
 {
-    public interface IUserRepository : IEntityRepository<User>
+    public class UserDto : DtoGetBase
     {
-
+        public User User { get; set; }
     }
 }

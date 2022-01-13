@@ -3,15 +3,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using MyBlog.Shared.Entities.Abstract;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace MyBlog.Entities.Concrete
 {
-    public class Role : EntityBase, IEntity
+    public class Role : IdentityRole<int>
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ICollection<User> Users { get; set; }
+        
     }
 }

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MyBlog.Entities.Concrete;
-using MyBlog.Shared.Data.Abstract;
+using MyBlog.Shared.Entities.Abstract;
 
-namespace MyBlog.Data.Abstract
+namespace MyBlog.Entities.Dtos
 {
-    public interface IRoleRepository : IEntityRepository<Role>
+    public class CategoryDto : DtoGetBase
     {
-
+        public Category Category { get; set; }
     }
 }
