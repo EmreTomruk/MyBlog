@@ -1,27 +1,5 @@
 ﻿$(document).ready(function ()
 {
-    $(window).scroll(function ()
-    {
-        if ($(this).scrollTop() > 50)
-        {
-            $('#back-to-top').fadeIn();
-        }
-        else
-        {
-            $('#back-to-top').fadeOut();
-        }
-    });
-    // scroll body to 0px on click
-
-    $('#back-to-top').click(function ()
-    {
-        $('body, html').animate(
-        {
-           scrollTop: 0
-        }, 400);
-        return false;
-    });
-
     // DataTables start here. 
 
     $('#categoriesTable').DataTable({
@@ -29,54 +7,53 @@
             "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons: [
+        buttons:
+        [
             {
                 text: 'Ekle',
-                attr: {
-                    id: "btnAdd",
-                },
+                attr: {id: "btnAdd"},
                 className: 'btn btn-success',
-                action: function (e, dt, node, config) {
-                }
+                action: function (e, dt, node, config) { }
             },
             {
                 text: 'Yenile',
                 className: 'btn btn-warning',
                 action: function (e, dt, node, config)
                 {
-                    $.ajax({
+                    $.ajax(
+                    {
                         type: 'GET',
                         url: '/Admin/Category/GetAllCategories/',
                         contentType: "application/json",
-                        beforeSend: function () {
+                        beforeSend: function ()
+                        {
                             $('#categoriesTable').hide();
                             $('.spinner-border').show();
                         },
                         success: function (data) {
                             const categoryListDto = jQuery.parseJSON(data); //Gelen string veri(Json) objeye cevirilir...
                             console.log(categoryListDto); //Gelen categoryListDto objelerini console'da goruntuleyebilmek icin yazdik...
-                            if (categoryListDto.ResultStatus === 0)
-                            {
+                            if (categoryListDto.ResultStatus === 0) {
                                 let tableBody = String.Empty;
                                 $.each(categoryListDto.Categories.$values, function (index, category) { //Json'a Parse edilecegi icin $values kullandik...
 
                                     tableBody += `
-                                        <tr>
-                                            <td>${category.Id}</td>
-                                            <td>${category.Name}</td>
-                                            <td>${category.Description}</td>
-                                            <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
-                                            <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
-                                            <td>${category.Note}</td>
-                                            <td>${convertToShortDate(category.CreatedDate)}</td>
-                                            <td>${category.CreatedByName}</td>
-                                            <td>${convertToShortDate(category.ModifiedDate)}</td>
-                                            <td>${category.ModifiedByName}</td>
-                                            <td>
-                                                <button class="btn btn-primary btn-sm btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span></button>
-                                                <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span></button>
-                                            </td>
-                                        </tr>`;
+                                    <tr>
+                                        <td>${category.Id}</td>
+                                        <td>${category.Name}</td>
+                                        <td>${category.Description}</td>
+                                        <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
+                                        <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
+                                        <td>${category.Note}</td>
+                                        <td>${convertToShortDate(category.CreatedDate)}</td>
+                                        <td>${category.CreatedByName}</td>
+                                        <td>${convertToShortDate(category.ModifiedDate)}</td>
+                                        <td>${category.ModifiedByName}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span></button>
+                                            <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span></button>
+                                        </td>
+                                    </tr>`;
                                 });
                                 $('#categoriesTable > tbody').replaceWith(tableBody);
                                 $('.spinner-border').hide();
@@ -95,7 +72,8 @@
                 }
             }
         ],
-        language: {
+        language:
+        {
             "sDecimal": ",",
             "sEmptyTable": "Tabloda herhangi bir veri mevcut değil",
             "sInfo": "_TOTAL_ kayıttan _START_ - _END_ arasındaki kayıtlar gösteriliyor",
@@ -114,12 +92,15 @@
                 "sNext": "Sonraki",
                 "sPrevious": "Önceki"
             },
-            "oAria": {
+            "oAria":
+            {
                 "sSortAscending": ": artan sütun sıralamasını aktifleştir",
                 "sSortDescending": ": azalan sütun sıralamasını aktifleştir"
             },
-            "select": {
-                "rows": {
+            "select":
+            {
+                "rows":
+                {
                     "_": "%d kayıt seçildi",
                     "0": "",
                     "1": "1 kayıt seçildi"
@@ -147,8 +128,8 @@
 
         // Ajax POST / Posting the FormData as CategoryAddDto starts from here. 
 
-        placeHolderDiv.on('click', '#btnSave', function (event) {
-
+        placeHolderDiv.on('click', '#btnSave', function (event)
+        {
             event.preventDefault(); //Kendi click islemini onlemis olduk(aksi halde sayfa yenilenecekti)... 
             const form = $('#form-category-add');
             const actionUrl = form.attr('action'); //action=_CategoryAddPartial.cshtml sayfasindaki asp-action="Add"'tir...
@@ -262,6 +243,8 @@
             }
         });
     });
+    //Ajax POST / Deleting a Category ends from here 
+
     // Ajax POST / Updating a Category starts from here
 
     $(function ()

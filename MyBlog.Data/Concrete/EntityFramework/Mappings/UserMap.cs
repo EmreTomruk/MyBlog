@@ -82,6 +82,7 @@ namespace MyBlog.Data.Concrete.EntityFramework.Mappings
             };
             editorUser.PasswordHash = CreatePasswordHash(editorUser, "Aasd123+-@2");
 
+
             builder.HasData(adminUser, editorUser);
         }
         private string CreatePasswordHash(User user, string password)

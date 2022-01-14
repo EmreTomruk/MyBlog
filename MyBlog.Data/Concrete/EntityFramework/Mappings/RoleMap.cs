@@ -53,7 +53,7 @@ namespace MyBlog.Data.Concrete.EntityFramework.Mappings
                         Id = 2,
                         Name = "Editor",
                         NormalizedName = "EDITOR",
-                        ConcurrencyStamp = Guid.NewGuid().ToString(format: "D")
+                        ConcurrencyStamp = Guid.NewGuid().ToString(format:"D")
                     }); 
         }
     }

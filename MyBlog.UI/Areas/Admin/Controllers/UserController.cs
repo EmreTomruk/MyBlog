@@ -38,7 +38,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -84,12 +84,19 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 }
             }
             else
-            {
-                return View("UserLogin");
-            }
+            { return View("UserLogin"); }
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home", new { Area=String.Empty});
+        }
+
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<JsonResult> GetAllUsers()
         {
@@ -103,18 +110,17 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 ReferenceHandler = ReferenceHandler.Preserve
             });
-
             return Json(userListDto);
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public IActionResult Add()
         {
             return PartialView("_UserAddPartial");
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(UserAddDto userAddDto)
         {
@@ -144,7 +150,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 {
                     foreach (var error in result.Errors) //Donen hatalari ekliyoruz...
                     {
-                        ModelState.AddModelError("", error.Description);
+                        ModelState.AddModelError(String.Empty, error.Description);
                     }
 
                     var userAddAjaxErrorViewModel = JsonSerializer.Serialize(new UserAddAjaxViewModel
@@ -166,8 +172,8 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             return Json(userAddAjaxModelStateErrorViewModel);
         }
 
-        [Authorize]
-        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        [HttpPost]
         public async Task<JsonResult> Delete(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -177,9 +183,9 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 var deletedUser = JsonSerializer.Serialize(new UserDto
                 {
-                    User = user,
                     ResultStatus = ResultStatus.Success,
-                    Message = $"{user.UserName} adlı kullanıcı başarıyla silinmiştir."                
+                    Message = $"{user.UserName} adlı kullanıcı başarıyla silinmiştir.",
+                    User = user
                 });
 
                 return Json(deletedUser);
@@ -196,16 +202,16 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             
                 var deleteduserErrorModel = JsonSerializer.Serialize(new UserDto
                 {
-                    User = user,
                     ResultStatus = ResultStatus.Error,
-                    Message = $"{user.UserName} adlı kullanıcı silinememiştir.\n{errorMessages}"                    
+                    Message = $"{user.UserName} adlı kullanıcı silinememiştir.\n{errorMessages}",
+                    User = user
                 });
 
                 return Json(deleteduserErrorModel);
             }     
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<PartialViewResult> Update(int userId)
         {
@@ -215,7 +221,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             return PartialView("_UserUpdatePartial", userUpdateDto);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto)
         {
@@ -274,11 +280,11 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     UserUpdateDto = userUpdateDto,
                     UserUpdatePartial = await this.RenderViewToStringAsync("_UserUpdatePartial", userUpdateDto)
                 });
-
                 return Json(userUpdateModelStateErrorViewModel);
             }
         }
 
+        [Authorize(Roles ="Admin, Editor")]
         public async Task<string> ImageUpload(string userName, IFormFile pictureFile)
         {
             // ~/img/user.Picture
@@ -296,10 +302,10 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 await pictureFile.CopyToAsync(stream); //Islem sonunda resmimiz "~/img" klasorune aktarilmis oluyor...
             }
-
             return fileName; // EmreTomruk_587_5_38_12_3_10_2020.png -> "~/img/user.Picture"
         }
 
+        [Authorize(Roles ="Admin, Editor")]
         public bool ImageDelete(string pictureName)
         {
             string wwwroot = _env.WebRootPath;
@@ -311,11 +317,16 @@ namespace MyBlog.UI.Areas.Admin.Controllers
 
                 return true;
             }
-
             else
             {
                 return false;
             }
+        }
+
+        [HttpGet]
+        public ViewResult AccessDenied()
+        {
+            return View();
         }
     }
 }

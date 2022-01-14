@@ -26,7 +26,8 @@ namespace MyBlog.Data.Concrete.EntityFramework.Mappings
                 {
                     RoleId = 1,
                     UserId = 1
-                }, new UserRole
+                },
+                new UserRole
                 {
                     RoleId = 2,
                     UserId = 2
