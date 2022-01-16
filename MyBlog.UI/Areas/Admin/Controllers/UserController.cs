@@ -68,8 +68,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, userLoginDto.RememberMe, false); //userLoginDto.RememberMe(isPersistent): Flag indicating whether the sign-in cookie should persist after the browser is closed.
 
-                    if (result.Succeeded) 
-                        return RedirectToAction("Index", "Home");
+                    if (result.Succeeded) return RedirectToAction("Index", "Home");
 
                     else
                     {
@@ -83,8 +82,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     return View("UserLogin");
                 }
             }
-            else
-            { return View("UserLogin"); }
+            else return View("UserLogin"); 
         }
 
         [Authorize]
@@ -142,7 +140,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         },
                         UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
                     });
-
                     return Json(userAddAjaxViewModel);
                 }
 
@@ -158,7 +155,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         UserAddDto = userAddDto, //Hatalarin dpnmesi icin gerekli...
                         UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
                     });
-
                     return Json(userAddAjaxErrorViewModel);
                 }
             }
@@ -168,7 +164,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 UserAddDto = userAddDto,
                 UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
             });
-
             return Json(userAddAjaxModelStateErrorViewModel);
         }
 
@@ -187,7 +182,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     Message = $"{user.UserName} adlı kullanıcı başarıyla silinmiştir.",
                     User = user
                 });
-
                 return Json(deletedUser);
             }
 
@@ -206,7 +200,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     Message = $"{user.UserName} adlı kullanıcı silinememiştir.\n{errorMessages}",
                     User = user
                 });
-
                 return Json(deleteduserErrorModel);
             }     
         }
@@ -318,9 +311,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 return true;
             }
             else
-            {
                 return false;
-            }
         }
 
         [HttpGet]

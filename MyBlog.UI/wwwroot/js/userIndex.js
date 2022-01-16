@@ -106,10 +106,12 @@
 
     // Ajax GET / Getting the _UserAddPartial as Modal Form starts from here. 
 
-    $(function () {
+    $(function ()
+    {
         const url = '/Admin/User/Add';
         const placeHolderDiv = $('#modalPlaceHolder');
-        $('#btnAdd').click(function () {
+        $('#btnAdd').click(function ()
+        {
             $.get(url).done(function (data) //modalPlaceHolder div'ine modal'imizi(User Controller-Add Action(get)'dan donen) yerlestirdik...
             {
                 placeHolderDiv.html(data); //"data" : "_UserAddPartial"'dir. Burada placeHolderDiv'in html'ini _UserAddPartial ile doldurduk..
@@ -120,7 +122,8 @@
 
         // Ajax POST / Posting the FormData as UserAddDto starts from here. 
 
-        placeHolderDiv.on('click', '#btnSave', function (event) {
+        placeHolderDiv.on('click', '#btnSave', function (event)
+        {
             event.preventDefault(); //Kendi click islemini onlemis olduk(aksi halde sayfa yenilenecekti)... 
             const form = $('#form-user-add');
             const actionUrl = form.attr('action'); //action=_UserAddPartial.cshtml sayfasindaki asp-action="Add"'tir...
@@ -190,15 +193,15 @@
         const userName = tableRow.find('td:eq(1)').text();
 
         Swal.fire(
-            {
-                title: 'Silmek istediğinize emin misiniz?',
-                text: `${userName} adlı kullanıcı silinecektir!`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Evet, silmek istiyorum.',
-                cancelButtonText: 'Hayır, silmek istemiyorum.'
+        {
+            title: 'Silmek istediğinize emin misiniz?',
+            text: `${userName} adlı kullanıcı silinecektir!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet, silmek istiyorum.',
+            cancelButtonText: 'Hayır, silmek istemiyorum.'
             }).then((result) => //Evet butonuna basilirsa result='true' olur...
             {
                 if (result.isConfirmed)

@@ -25,10 +25,11 @@ namespace MyBlog.Data.Concrete
         public IArticleRepository Articles => _articleRepository ?? new EfArticleRepository(_context); //Eger elimizde bir "_articleRepository" varsa doneriz, yoksa yeni bir "EfArticleRepository" olusturulur...
         public ICategoryRepository Categories => _categoryRepository ?? new EfCategoryRepository(_context);
         public ICommentRepository Comments => _commentRepository ?? new EfCommentRepository(_context);
-         public async Task<int> SaveAsync()
-         {
+
+        public async Task<int> SaveAsync()
+        {
             return await _context.SaveChangesAsync();
-         }
+        }
 
         public async ValueTask DisposeAsync()
         {

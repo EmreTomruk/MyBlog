@@ -49,7 +49,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         CategoryDto = result.Data,
                         CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto) //Eklenen categoryAddDto string'e cevirilir...
                     });
-
                     return Json(categoryAddAjaxModel);
                 }
             }
@@ -92,7 +91,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         CategoryDto = result.Data,
                         CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto) 
                     });
-
                     return Json(categoryUpdateAjaxModel);
                 }
             }
@@ -101,7 +99,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto) 
             });
-
             return Json(categoryUpdateAjaxErrorModel);
         }
 
@@ -112,7 +109,6 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             {
                 ReferenceHandler = ReferenceHandler.Preserve
             });
-
             return Json(categories);
         }
 

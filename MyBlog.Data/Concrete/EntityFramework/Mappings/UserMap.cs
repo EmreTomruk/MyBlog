@@ -57,7 +57,7 @@ namespace MyBlog.Data.Concrete.EntityFramework.Mappings
                 Id = 1,
                 UserName = "adminuser",
                 NormalizedUserName = "ADMINUSER",
-                Email="adminuser@gmail.com",
+                Email = "adminuser@gmail.com",
                 NormalizedEmail = "ADMINUSER@GMAIL.COM",
                 PhoneNumber = "+905555555555",
                 Picture = "adminuser.png",
@@ -81,7 +81,6 @@ namespace MyBlog.Data.Concrete.EntityFramework.Mappings
                 SecurityStamp = Guid.NewGuid().ToString(format:"D")
             };
             editorUser.PasswordHash = CreatePasswordHash(editorUser, "Aasd123+-@2");
-
 
             builder.HasData(adminUser, editorUser);
         }
