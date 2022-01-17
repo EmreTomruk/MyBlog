@@ -14,9 +14,9 @@ namespace MyBlog.UI.Areas.Admin.ViewComponents
         {
             _userManager = userManager;
         }
-        public ViewViewComponentResult Invoke()
+        public IViewComponentResult Invoke()
         {
-            var user = _userManager.GetUserAsync(HttpContext.User).Result; //HttpContext.User: Login olan kullaniciya ait claim. Result: VC asenkron islem yapmaya izin vermediginden...
+            var user = _userManager.GetUserAsync(HttpContext.User).Result; //HttpContext.User:Login olan kullaniciya ait claim. Result: VC asenkron islem yapmaya izin vermediginden...
             var roles = _userManager.GetRolesAsync(user).Result;
 
             return View(new UserWithRolesViewModel

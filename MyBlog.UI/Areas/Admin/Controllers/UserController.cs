@@ -38,12 +38,12 @@ namespace MyBlog.UI.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync(); //Bu islemle tum kullanicilar gelir. Bunu UserListDto icine attiktan sonra View'e gonderecegiz...
-            
+
             return View(new UserListDto
             {
                 Users = users,
@@ -68,7 +68,12 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, userLoginDto.RememberMe, false); //userLoginDto.RememberMe(isPersistent): Flag indicating whether the sign-in cookie should persist after the browser is closed.
 
-                    if (result.Succeeded) return RedirectToAction("Index", "Home");
+<<<<<<< HEAD
+                    if (result.Succeeded)
+=======
+                    if (result.Succeeded) 
+>>>>>>> parent of 9f96e26 (Last Changes)
+                        return RedirectToAction("Index", "Home");
 
                     else
                     {
@@ -82,7 +87,12 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     return View("UserLogin");
                 }
             }
-            else return View("UserLogin"); 
+<<<<<<< HEAD
+            else return View("UserLogin");
+=======
+            else
+            { return View("UserLogin"); }
+>>>>>>> parent of 9f96e26 (Last Changes)
         }
 
         [Authorize]
@@ -140,6 +150,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         },
                         UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
                     });
+
                     return Json(userAddAjaxViewModel);
                 }
 
@@ -155,6 +166,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                         UserAddDto = userAddDto, //Hatalarin dpnmesi icin gerekli...
                         UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
                     });
+
                     return Json(userAddAjaxErrorViewModel);
                 }
             }
@@ -164,6 +176,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 UserAddDto = userAddDto,
                 UserAddPartial = await this.RenderViewToStringAsync("_UserAddPartial", userAddDto)
             });
+
             return Json(userAddAjaxModelStateErrorViewModel);
         }
 
@@ -182,6 +195,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     Message = $"{user.UserName} adlı kullanıcı başarıyla silinmiştir.",
                     User = user
                 });
+
                 return Json(deletedUser);
             }
 
@@ -190,9 +204,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 string errorMessages = String.Empty;
 
                 foreach (var error in result.Errors)
-                {
                     errorMessages = $"*{error.Description}\n";
-                }
             
                 var deleteduserErrorModel = JsonSerializer.Serialize(new UserDto
                 {
@@ -200,6 +212,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     Message = $"{user.UserName} adlı kullanıcı silinememiştir.\n{errorMessages}",
                     User = user
                 });
+
                 return Json(deleteduserErrorModel);
             }     
         }
@@ -235,9 +248,8 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 if (result.Succeeded) //Islem basariyla gerceklesip veritabanina gonderildiyse
                 {
                     if (isNewPictureUpload)
-                    {
                         ImageDelete(oldUserPicture);
-                    }
+
                     var userUpdateViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
                     {
                         UserDto = new UserDto
@@ -254,9 +266,8 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 else //Identity hatalari
                 {
                     foreach (var error in result.Errors)
-                    {
                         ModelState.AddModelError("", error.Description);
-                    }
+
                     var userUpdateErrorViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
                     {
                         UserUpdateDto = userUpdateDto,
@@ -275,6 +286,108 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 });
                 return Json(userUpdateModelStateErrorViewModel);
             }
+        }
+
+        [Authorize]
+        public async Task<ViewResult> ChangeDetails() //JS islemi(modal form acilmayacak) kullanilmayacak, MVC mimarisinin kendisi kullanilacak...
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var updateDto = _mapper.Map<UserUpdateDto>(user);
+
+            return View(updateDto);           
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ViewResult> ChangeDetails(UserUpdateDto userUpdateDto) 
+        {
+            if (ModelState.IsValid)
+            {
+                bool isNewPictureUpload = false;
+                var oldUser = await _userManager.GetUserAsync(HttpContext.User);
+                var oldUserPicture = oldUser.Picture;
+
+                if (userUpdateDto.PictureFile != null)
+                {
+                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName, userUpdateDto.PictureFile);
+
+                    if (oldUserPicture != "default.png") 
+                    {
+                        isNewPictureUpload = true; //Eski resmin silinmesini(bu resmi kullananlar olabilir) onledik!
+                    }
+                }
+                var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
+                var result = await _userManager.UpdateAsync(updatedUser);
+
+                if (result.Succeeded) //Islem basariyla gerceklesip veritabanina gonderildiyse
+                {
+                    if (isNewPictureUpload)
+                    {
+                        ImageDelete(oldUserPicture);
+                    }
+                    TempData.Add("SuccessMessage", $"{updatedUser.UserName} adlı kullanıcı başarıyla güncellenmiştir."); 
+
+                    return View(userUpdateDto);
+                }
+                else 
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(String.Empty, error.Description);
+                    }
+                    return View(userUpdateDto); //Hata alinirsa validation-summary kisminda gozukecektir...
+                }
+            }
+
+            else
+            {
+                return View(userUpdateDto);
+            }
+        }
+
+        [Authorize]
+        public  ViewResult PasswordChange()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ViewResult> PasswordChange(UserPasswordChangeDto userPasswordChangeDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var isVerified = await _userManager.CheckPasswordAsync(user, userPasswordChangeDto.CurrentPassword);
+
+                if (isVerified)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user, userPasswordChangeDto.CurrentPassword, userPasswordChangeDto.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        await _userManager.UpdateSecurityStampAsync(user); //Yakin zamanda birdegisiklik oldugunu gosterir...
+                        await _signInManager.SignOutAsync();
+                        await _signInManager.PasswordSignInAsync(user, userPasswordChangeDto.NewPassword, true, false);
+                        TempData.Add("SuccessMessage", $"Şifreniz başarıyla güncellenmiştir.");
+
+                        return View();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorMessage: "Lütfen, girmiş olduğunuz şifrenizi kontrol ediniz...");
+
+                    return View(userPasswordChangeDto);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, errorMessage: "Lütfen, girmiş olduğunuz şifrenizi kontrol ediniz...");
+
+                return View(userPasswordChangeDto);
+            }
+            return View();
         }
 
         [Authorize(Roles ="Admin, Editor")]
@@ -310,8 +423,14 @@ namespace MyBlog.UI.Areas.Admin.Controllers
 
                 return true;
             }
+<<<<<<< HEAD
+            else return false;           
+=======
             else
+            {
                 return false;
+            }
+>>>>>>> parent of 9f96e26 (Last Changes)
         }
 
         [HttpGet]
