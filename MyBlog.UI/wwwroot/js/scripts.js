@@ -3,7 +3,8 @@
     * Copyright 2013-2020 Start Bootstrap
     * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
     */
-    (function($) {
+    (function ($)
+    {
     "use strict";
 
     // Add active state to sidbar nav links
@@ -23,33 +24,7 @@
         });
     })(jQuery);
 
-<<<<<<< HEAD
     //Get the button
-=======
-//    /*Scroll Bar*/
-//$(document).ready(function () {
-//    $(window).scroll(function () {
-//        if ($(this).scrollTop() > 50) {
-//            $('#back-to-top').fadeIn();
-//        }
-//        else {
-//            $('#back-to-top').fadeOut();
-//        }
-//    });
-//    // scroll body to 0px on click
-
-//    $('#back-to-top').click(function () {
-//        $('body, html').animate(
-//            {
-//                scrollTop: 0
-//            }, 400);
-//        return false;
-//    });
-//});
-
-
-//Get the button
->>>>>>> parent of 9f96e26 (Last Changes)
     var mybutton = document.getElementById("myBtn");
 
     // When the user scrolls down 20px from the top of the document, show the button

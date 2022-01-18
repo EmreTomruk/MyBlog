@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using MyBlog.Services.AutoMapper.Profiles;
 using MyBlog.Services.Extensions;
 using System.Text.Json.Serialization;
+using MyBlog.UI.Helpers.Abstract;
+using MyBlog.UI.Helpers.Concrete;
 
 namespace MyBlog.Mvc
 {
@@ -30,6 +32,8 @@ namespace MyBlog.Mvc
             services.AddSession(); //Kullanici siteye giris yaptigi anda acilan-server'da olusturulan oturumdur. Global bir degisken gibi dusunulebilir...
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile), typeof(UserProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  
             services.LoadMyServices();
+            services.AddScoped<IImageHelper, ImageHelper>();
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = new PathString("/Admin/User/Login"); //User:controller, Login:action
