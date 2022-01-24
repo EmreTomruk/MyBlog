@@ -20,6 +20,7 @@ using MyBlog.Shared.Utilities.Extensions;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
 using MyBlog.UI.Areas.Admin.Models;
 using MyBlog.UI.Helpers.Abstract;
+using MyBlog.UI.Helpers.Concrete;
 
 namespace MyBlog.UI.Areas.Admin.Controllers
 {
@@ -85,9 +86,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 }
             }
             else
-            { 
                 return View("UserLogin"); 
-            }
         }
 
         [Authorize]
@@ -132,6 +131,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 var uploadedImageDtoResult = await _imageHelper.UploadUserImage(userAddDto.UserName, userAddDto.PictureFile);
                 userAddDto.Picture = uploadedImageDtoResult.ResultStatus == 
                     ResultStatus.Success ? uploadedImageDtoResult.Data.FullName : "userImages/defaultUser.png";
+
                 var user = _mapper.Map<User>(userAddDto); //Bize User donecek...
                 var result = await _userManager.CreateAsync(user, userAddDto.Password); //Sifreyi hashleyip veritabanina kaydeder...
 
@@ -228,9 +228,10 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 if (userUpdateDto.PictureFile != null)
                 {
                     var uploadedImageDtoResult = await _imageHelper.UploadUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile);
-                    userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success ? uploadedImageDtoResult.Data.FullName : "userImages/defaultUser.png";
+                    userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success ? uploadedImageDtoResult.Data.FullName : "userImages/defaultUser.png"; //Success olmazsa Default resmi yukle!
 
-                    isNewPictureUpload = true;
+                    if (oldUserPicture != "userImages/defaultUser.png") //Eski resmin silinmesini(bu resmi kullananlar olabilir) onledik! 
+                        isNewPictureUpload = true;
                 }
                 var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
                 var result = await _userManager.UpdateAsync(updatedUser);
@@ -238,7 +239,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 if (result.Succeeded) //Islem basariyla gerceklesip veritabanina gonderildiyse
                 {
                     if (isNewPictureUpload)
-                        ImageDelete(oldUserPicture);
+                        _imageHelper.Delete(oldUserPicture);
 
                     var userUpdateViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
                     {
@@ -256,7 +257,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 else //Identity hatalari
                 {
                     foreach (var error in result.Errors)
-                        ModelState.AddModelError("", error.Description);
+                        ModelState.AddModelError(String.Empty, error.Description);
 
                     var userUpdateErrorViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
                     {
@@ -303,7 +304,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                     userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == 
                         ResultStatus.Success ? uploadedImageDtoResult.Data.FullName : "userImages/defaultUser.png";
 
-                    if (oldUserPicture != "default.png") 
+                    if (oldUserPicture != "userImages/defaultUser.png") 
                         isNewPictureUpload = true; //Eski resmin silinmesini(bu resmi kullananlar olabilir) onledik!
                 }
                 var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
@@ -312,8 +313,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 if (result.Succeeded) //Islem basariyla gerceklesip veritabanina gonderildiyse
                 {
                     if (isNewPictureUpload)
-                        ImageDelete(oldUserPicture);
-
+                        _imageHelper.Delete(oldUserPicture);
                     TempData.Add("SuccessMessage", $"{updatedUser.UserName} adlı kullanıcı başarıyla güncellenmiştir."); 
 
                     return View(userUpdateDto);
@@ -369,32 +369,14 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, errorMessage: "Lütfen, girmiş olduğunuz şifrenizi kontrol ediniz...");
-
                     return View(userPasswordChangeDto);
                 }
             }
             else
             {
                 ModelState.AddModelError(string.Empty, errorMessage: "Lütfen, girmiş olduğunuz şifrenizi kontrol ediniz...");
-
                 return View(userPasswordChangeDto);
             }
-        }
-
-        [Authorize(Roles ="Admin, Editor")]
-        public bool ImageDelete(string pictureName)
-        {
-            //string wwwroot = _env.WebRootPath;
-            //var fileToDelete = Path.Combine($"{wwwroot}/img", pictureName);
-
-            //if (System.IO.File.Exists(fileToDelete))
-            //{
-            //    System.IO.File.Delete(fileToDelete);
-
-            //    return true;
-            //}
-
-            return true;           
         }
 
         [HttpGet]

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +13,7 @@ namespace MyBlog.Shared.Data.Concrete.EntityFramework
     public class EfEntityRepositoryBase<TEntity> : IEntityRepository<TEntity>
     where TEntity : class, IEntity, new()
     {
-        private readonly DbContext _context;
+        protected readonly DbContext _context; //EfEntityRepositoryBase'ten tureyen diger siniflarda da DbContext'e erisebilmek icin(bu sayede kendi metodlarimizi implemente edebiliriz) protected yaptik...
 
         public EfEntityRepositoryBase(DbContext context)
         {
@@ -63,13 +62,9 @@ namespace MyBlog.Shared.Data.Concrete.EntityFramework
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
+            query = query.Where(predicate);
 
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-
-            else if (includeProperties.Any())
+            if (includeProperties.Any())
             {
                 foreach (var includeProperty in includeProperties)
                 {

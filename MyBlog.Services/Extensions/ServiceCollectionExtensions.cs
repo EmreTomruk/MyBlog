@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyBlog.Data.Abstract;
 using MyBlog.Data.Concrete;
@@ -16,9 +17,9 @@ namespace MyBlog.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection) //
+        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection, string connectionString) //UI katmani ile diger katmanlar arasinda kopru gorevi gorur...
         {
-            serviceCollection.AddDbContext<MyBlogContext>(); //AddDbContext'te ozunde bir Scope'tur...
+            serviceCollection.AddDbContext<MyBlogContext>(options => options.UseSqlServer(connectionString)); //AddDbContext'te ozunde bir Scope'tur...
             serviceCollection.AddIdentity<User, Role>(options => //Kaydedilecek kullaniciyla alakali ayarlar(sifre, e-mail'in unique olmasi vs.) yapilir...
             {
                 options.Password.RequireDigit = true;

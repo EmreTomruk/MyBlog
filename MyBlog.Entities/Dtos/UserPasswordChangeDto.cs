@@ -11,7 +11,7 @@ namespace MyBlog.Entities.Dtos
 {
     public class UserPasswordChangeDto
     {
-        [DisplayName("Şu Anki Şifreniz")]
+        [DisplayName("Mevcut Şifreniz")]
         [Required(ErrorMessage = "{0} boş geçilmemelidir.")]
         [MaxLength(30, ErrorMessage = "{0} {1} karakterden büyük olmamalıdır.")]
         [MinLength(10, ErrorMessage = "{0} {1} karakterden küçük olmamalıdır.")]

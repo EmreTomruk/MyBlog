@@ -9,6 +9,7 @@ using MyBlog.Data.Abstract;
 using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Services.Abstract;
+using MyBlog.Services.Utilities;
 using MyBlog.Shared.Utilities.Results.Abstract;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
 using MyBlog.Shared.Utilities.Results.Concrete;
@@ -36,11 +37,11 @@ namespace MyBlog.Services.Concrete
                    Category=category,
                    ResultStatus=ResultStatus.Success
                });
-           return new DataResult<CategoryDto>(ResultStatus.Error, "Böyle bir kategori bulunamadı", new CategoryDto
+           return new DataResult<CategoryDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: false), new CategoryDto
            {
                Category=null,
                ResultStatus=ResultStatus.Error,
-               Message= "Böyle bir kategori bulunamadı"
+               Message= Messages.Category.NotFound(isPlural: false)
            });
         }
 
@@ -57,11 +58,11 @@ namespace MyBlog.Services.Concrete
                 });
             }
 
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
+            return new DataResult<CategoryListDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: true), new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
             {
                 Categories = null,
                 ResultStatus = ResultStatus.Error,
-                Message = "Hiçbir kategori bulunamadı."
+                Message = Messages.Category.NotFound(isPlural: true),
             });
         }
 
@@ -78,11 +79,11 @@ namespace MyBlog.Services.Concrete
                 });
             }
 
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
+            return new DataResult<CategoryListDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: true), new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
             {
                 Categories = null,
                 ResultStatus = ResultStatus.Error,
-                Message = "Hiçbir kategori bulunamadı."
+                Message = Messages.Category.NotFound(isPlural: true),
             });
         }
 
@@ -96,11 +97,11 @@ namespace MyBlog.Services.Concrete
             var addedCategory = await _unitOfWork.Categories.AddAsync(category);
             await _unitOfWork.SaveAsync();
 
-            return new DataResult<CategoryDto>(ResultStatus.Success, $"{categoryAddDto.Name} adlı kategori başarıyla eklenmiştir.", new CategoryDto
+            return new DataResult<CategoryDto>(ResultStatus.Success, Messages.Category.Add(categoryName: addedCategory.Name), new CategoryDto
             {
-                Category=addedCategory,
-                ResultStatus=ResultStatus.Success,
-                Message=$"{categoryAddDto.Name} adlı kategori başarıyla eklenmiştir."
+                Category= addedCategory,
+                ResultStatus= ResultStatus.Success,
+                Message= Messages.Category.Add(categoryName: addedCategory.Name)
             });
         }
 
@@ -114,11 +115,11 @@ namespace MyBlog.Services.Concrete
             var updatedCategory = await _unitOfWork.Categories.UpdateAsync(category);
             await _unitOfWork.SaveAsync();
 
-            return new DataResult<CategoryDto>(ResultStatus.Success, $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir.", new CategoryDto
+            return new DataResult<CategoryDto>(ResultStatus.Success, Messages.Category.Update(updatedCategory.Name), new CategoryDto
             {
                 Category = updatedCategory,
                 ResultStatus = ResultStatus.Success,
-                Message = $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir."
+                Message = Messages.Category.Update(updatedCategory.Name)
             });            
         }
 
@@ -135,18 +136,18 @@ namespace MyBlog.Services.Concrete
                 var deletedCategory = await _unitOfWork.Categories.UpdateAsync(category);
                 await _unitOfWork.SaveAsync();
 
-                return new DataResult<CategoryDto>(ResultStatus.Success, $"{deletedCategory.Name} adlı kategori başarıyla silinmiştir.", new CategoryDto
+                return new DataResult<CategoryDto>(ResultStatus.Success, Messages.Category.Delete(deletedCategory.Name), new CategoryDto
                 {
                     Category = deletedCategory,
                     ResultStatus = ResultStatus.Success,
-                    Message = $"{deletedCategory.Name} adlı kategori başarıyla silinmiştir."
+                    Message = Messages.Category.Delete(deletedCategory.Name)
                 });
             }
-            return new DataResult<CategoryDto>(ResultStatus.Error, "Böyle bir kategori bulunamadı.", new CategoryDto
+            return new DataResult<CategoryDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: false), new CategoryDto
             {
                 Category = null,
                 ResultStatus = ResultStatus.Error,
-                Message = "Böyle bir kategori bulunamadı."
+                Message = Messages.Category.NotFound(isPlural: false),
             });
         }
 
@@ -159,9 +160,9 @@ namespace MyBlog.Services.Concrete
                 await _unitOfWork.Categories.DeleteAsync(category);
             await _unitOfWork.SaveAsync();
 
-                return new Result(ResultStatus.Success, message: $"{category.Name} adlı kategori başarıyla veritabanından silinmiştir.");
+                return new Result(ResultStatus.Success, message: Messages.Category.HardDelete(categoryName: category.Name));
             }
-            return new Result(ResultStatus.Error, message: "Böyle bir kategori bulunamadı.");
+            return new Result(ResultStatus.Error, message: Messages.Category.NotFound(isPlural: false));
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActive()
@@ -174,7 +175,7 @@ namespace MyBlog.Services.Concrete
                     Categories = categories,
                     ResultStatus = ResultStatus.Success
                 });
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı.", null);
+            return new DataResult<CategoryListDto>(ResultStatus.Error, message: Messages.Category.NotFound(isPlural: true), null);
         }
 
         public async Task<IDataResult<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId)
@@ -191,7 +192,7 @@ namespace MyBlog.Services.Concrete
 
             else
             {
-                return new DataResult<CategoryUpdateDto>(ResultStatus.Error, message: "Böyle bir kategori bulunamadı...", null);
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Error, message: Messages.Category.NotFound(isPlural: false), null);
             }
         }
     }

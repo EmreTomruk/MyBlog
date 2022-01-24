@@ -14,6 +14,7 @@ using MyBlog.Services.Extensions;
 using System.Text.Json.Serialization;
 using MyBlog.UI.Helpers.Abstract;
 using MyBlog.UI.Helpers.Concrete;
+using Microsoft.Extensions.Configuration;
 
 namespace MyBlog.Mvc
 {
@@ -21,6 +22,12 @@ namespace MyBlog.Mvc
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public Startup(IConfiguration configuration)
+        {
+            Configuration= configuration;
+        }
+        public IConfiguration Configuration{ get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt =>
@@ -31,7 +38,7 @@ namespace MyBlog.Mvc
 
             services.AddSession(); //Kullanici siteye giris yaptigi anda acilan-server'da olusturulan oturumdur. Global bir degisken gibi dusunulebilir...
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile), typeof(UserProfile)); //Derleme esnasinda AutoMapper CategoryProfile ve ArticleProfile siniflarini tarar ve ekler.  
-            services.LoadMyServices();
+            services.LoadMyServices(connectionString: Configuration.GetConnectionString("LocalDB"));
             services.AddScoped<IImageHelper, ImageHelper>();
 
             services.ConfigureApplicationCookie(options =>
