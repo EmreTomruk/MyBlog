@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyBlog.Services.Utilities
 {
-    public class Messages
+    public class Messages : IMessages
     {
         public static class Category
         {
@@ -66,6 +66,14 @@ namespace MyBlog.Services.Utilities
             {
                 return $"{articleName} başlıklı makale başarıyla veritabanından silinmiştir.";
             }
+        }
+
+        public string NotFound(bool isPlural, string pictureName)
+        {
+            if (isPlural)
+                return "Hiçbir resim bulunamadı";
+
+            return $"{pictureName} isminde bir resim bulunamadı";
         }
     }
 }

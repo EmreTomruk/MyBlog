@@ -12,6 +12,7 @@ using MyBlog.Data.Concrete.EntityFramework.Contexts;
 using MyBlog.Entities.Concrete;
 using MyBlog.Services.Abstract;
 using MyBlog.Services.Concrete;
+using MyBlog.Services.Utilities;
 
 namespace MyBlog.Services.Extensions
 {
@@ -37,6 +38,7 @@ namespace MyBlog.Services.Extensions
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IArticleService, ArticleManager>();
+            serviceCollection.AddScoped<IMessages, Messages>();
 
             return serviceCollection;
         }

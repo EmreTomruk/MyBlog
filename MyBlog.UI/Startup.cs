@@ -22,11 +22,11 @@ namespace MyBlog.Mvc
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
-            Configuration= configuration;
+            Configuration = configuration;
         }
-        public IConfiguration Configuration{ get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,7 +43,7 @@ namespace MyBlog.Mvc
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = new PathString("/Admin/User/Login"); //User:controller, Login:action
+                options.LoginPath = new PathString("/Admin/User/Login"); //User: controller, Login:action
                 options.LogoutPath = new PathString("/Admin/User/Logout");
                 options.Cookie = new CookieBuilder
                 {

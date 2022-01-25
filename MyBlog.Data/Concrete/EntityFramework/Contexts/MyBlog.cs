@@ -22,10 +22,7 @@ namespace MyBlog.Data.Concrete.EntityFramework.Contexts
         //    optionsBuilder.UseSqlServer(
         //        @"Server=(localdb)\MSSQLLocalDB; Database=MyBlogDb; Trusted_Connection=True; Connect Timeout=30; MultipleActiveResultSets=True;");
         //}
-        public MyBlogContext(DbContextOptions<MyBlogContext> options) : base(options)
-        {
-
-        }
+        public MyBlogContext(DbContextOptions<MyBlogContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

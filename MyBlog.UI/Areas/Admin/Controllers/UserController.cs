@@ -314,7 +314,7 @@ namespace MyBlog.UI.Areas.Admin.Controllers
                 {
                     if (isNewPictureUpload)
                         _imageHelper.Delete(oldUserPicture);
-                    TempData.Add("SuccessMessage", $"{updatedUser.UserName} adlı kullanıcı başarıyla güncellenmiştir."); 
+                    TempData.Add("SuccessMessage", $"{updatedUser.UserName} adlı kullanıcı başarıyla güncellenmiştir.");
 
                     return View(userUpdateDto);
                 }

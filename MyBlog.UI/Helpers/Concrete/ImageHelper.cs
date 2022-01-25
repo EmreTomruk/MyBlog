@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using MyBlog.Entities.Dtos;
+using MyBlog.Services.Utilities;
 using MyBlog.Shared.Utilities.Extensions;
 using MyBlog.Shared.Utilities.Results.Abstract;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
@@ -17,11 +18,13 @@ namespace MyBlog.UI.Helpers.Concrete
         private readonly IWebHostEnvironment _env;
         private readonly string _wwwroot;
         private readonly string imgFolder = "img";
+        private readonly IMessages _messages;
 
-        public ImageHelper(IWebHostEnvironment env)
+        public ImageHelper(IWebHostEnvironment env, IMessages messages)
         {
             _env = env;
             _wwwroot = _env.WebRootPath;
+            _messages = messages;
         }
 
         public async Task<IDataResult<ImageUploadedDto>> UploadUserImage(string userName, IFormFile pictureFile, string folderName="userImages") //Kullanici resimlerini "userImages" klasorune eklemek isteriz! Boylece her kullanici resmi yukledigimizde 2 parametre ile islemi gerceklestirebiliyor olacagiz...
@@ -43,7 +46,7 @@ namespace MyBlog.UI.Helpers.Concrete
                 await pictureFile.CopyToAsync(stream); //Islem sonunda resmimiz "~/img/..." klasorune aktarilmis oluyor...
             }
 
-            return new DataResult<ImageUploadedDto>(ResultStatus.Success, $"{userName} adlı kullanıcının resmi başarıyla yüklenmiştir.", 
+            return new DataResult<ImageUploadedDto>(ResultStatus.Success, /*$"{userName} adlı kullanıcının resmi başarıyla yüklenmiştir."*/_messages.NotFound(isPlural: true, oldFileName), 
             new ImageUploadedDto
             {
                 FullName = $"{folderName}/{newFileName}",
@@ -64,10 +67,10 @@ namespace MyBlog.UI.Helpers.Concrete
                 var fileInfo = new FileInfo(fileToDelete);
                 var imageDeletedDto = new ImageDeletedDto //fileInfo silinecegi icin onu DataResult icinde kullanamayiz, bu yuzden imageDeletedDto'yu urettik...
                 {
-                    FullName=pictureName,
-                    Extendion=fileInfo.Extension,
-                    Path=fileInfo.FullName,
-                    Size=fileInfo.Length
+                    FullName = pictureName,
+                    Extendion = fileInfo.Extension,
+                    Path = fileInfo.FullName,
+                    Size = fileInfo.Length
                 };
                 System.IO.File.Delete(fileToDelete);
 
@@ -75,7 +78,7 @@ namespace MyBlog.UI.Helpers.Concrete
             }
             else
             {
-                return new DataResult<ImageDeletedDto>(ResultStatus.Error, $"Böyle bir resim bulunamadı", null);
+                return new DataResult<ImageDeletedDto>(ResultStatus.Error, _messages.NotFound(isPlural: false, pictureName: pictureName), null);
             }
         }
     }

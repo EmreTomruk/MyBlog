@@ -286,10 +286,12 @@
                 {
                     const userUpdateAjaxModel = jQuery.parseJSON(data);
                     console.log(userUpdateAjaxModel);
+                    var id;
+                    var tableRow;
                     if (userUpdateAjaxModel.UserDto !== null)
                     {
-                        const id = userUpdateAjaxModel.UserDto.User.Id;
-                        const tableRow = $(`[name="${id}"]`);
+                        id = userUpdateAjaxModel.UserDto.User.Id;
+                        tableRow = $(`[name="${id}"]`);
                     }                  
                     const newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial);
                     placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
@@ -307,7 +309,7 @@
                             `
                             <button class="btn btn-primary btn-sm btn-update" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
                             <button class="btn btn-danger btn-sm btn-delete" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
-                         ]);
+                        ]);
 
                         tableRow.attr("name", `${id}`);
                         dataTable.row(tableRow).invalidate();
@@ -331,6 +333,6 @@
                 }
             });
         });
-        /* Ajax POST / Updating a User ends from here */
     });
+    /* Ajax POST / Updating a User ends from here */
 });
