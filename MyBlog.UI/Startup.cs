@@ -43,7 +43,7 @@ namespace MyBlog.Mvc
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = new PathString("/Admin/User/Login"); //User: controller, Login:action
+                options.LoginPath = new PathString("/Admin/User/Login"); //User: controller, Login: action
                 options.LogoutPath = new PathString("/Admin/User/Logout");
                 options.Cookie = new CookieBuilder
                 {
