@@ -16,7 +16,7 @@ using MyBlog.UI.Helpers.Abstract;
 using MyBlog.UI.Helpers.Concrete;
 using Microsoft.Extensions.Configuration;
 
-namespace MyBlog.Mvc
+namespace MyBlog.UI
 {
     public class Startup
     {

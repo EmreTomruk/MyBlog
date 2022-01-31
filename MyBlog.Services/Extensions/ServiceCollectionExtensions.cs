@@ -38,6 +38,7 @@ namespace MyBlog.Services.Extensions
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IArticleService, ArticleManager>();
+            serviceCollection.AddScoped<ICommentService, CommentManager>();
             serviceCollection.AddScoped<IMessages, Messages>();
 
             return serviceCollection;

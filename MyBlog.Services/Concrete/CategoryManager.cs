@@ -29,20 +29,20 @@ namespace MyBlog.Services.Concrete
 
         public async Task<IDataResult<CategoryDto>> Get(int categoryId) //Id'ye esit olan categori ve ona ait olan articles'ları getir...
         {
-           var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId, c => c.Articles);
+            var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId, c => c.Articles);
 
-           if (category != null)
-               return new DataResult<CategoryDto>(ResultStatus.Success, new CategoryDto
-               {
-                   Category=category,
-                   ResultStatus=ResultStatus.Success
-               });
-           return new DataResult<CategoryDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: false), new CategoryDto
-           {
-               Category=null,
-               ResultStatus=ResultStatus.Error,
-               Message= Messages.Category.NotFound(isPlural: false)
-           });
+            if (category != null)
+                return new DataResult<CategoryDto>(ResultStatus.Success, new CategoryDto
+                {
+                    Category = category,
+                    ResultStatus = ResultStatus.Success
+                });
+            return new DataResult<CategoryDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: false), new CategoryDto
+            {
+                Category = null,
+                ResultStatus = ResultStatus.Error,
+                Message = Messages.Category.NotFound(isPlural: false)
+            });
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAll()
@@ -57,7 +57,6 @@ namespace MyBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-
             return new DataResult<CategoryListDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: true), new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
             {
                 Categories = null,
@@ -78,7 +77,6 @@ namespace MyBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-
             return new DataResult<CategoryListDto>(ResultStatus.Error, Messages.Category.NotFound(isPlural: true), new CategoryListDto //Burada kurulan yapi ile ister Controller'da istersek View icinde yapimizi kurabiliriz...
             {
                 Categories = null,
@@ -91,7 +89,7 @@ namespace MyBlog.Services.Concrete
         {
             var category = _mapper.Map<Category>(categoryAddDto);
 
-            category.CreatedByName= createdByName;
+            category.CreatedByName = createdByName;
             category.ModifiedByName = createdByName;
 
             var addedCategory = await _unitOfWork.Categories.AddAsync(category);
@@ -99,9 +97,9 @@ namespace MyBlog.Services.Concrete
 
             return new DataResult<CategoryDto>(ResultStatus.Success, Messages.Category.Add(categoryName: addedCategory.Name), new CategoryDto
             {
-                Category= addedCategory,
-                ResultStatus= ResultStatus.Success,
-                Message= Messages.Category.Add(categoryName: addedCategory.Name)
+                Category = addedCategory,
+                ResultStatus = ResultStatus.Success,
+                Message = Messages.Category.Add(categoryName: addedCategory.Name)
             });
         }
 
@@ -120,7 +118,7 @@ namespace MyBlog.Services.Concrete
                 Category = updatedCategory,
                 ResultStatus = ResultStatus.Success,
                 Message = Messages.Category.Update(updatedCategory.Name)
-            });            
+            });
         }
 
         public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName)
@@ -158,7 +156,7 @@ namespace MyBlog.Services.Concrete
             if (category != null)
             {
                 await _unitOfWork.Categories.DeleteAsync(category);
-            await _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
 
                 return new Result(ResultStatus.Success, message: Messages.Category.HardDelete(categoryName: category.Name));
             }
@@ -167,7 +165,7 @@ namespace MyBlog.Services.Concrete
 
         public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActive()
         {
-            var categories = await _unitOfWork.Categories.GetAllAsync(c => !c.IsDeleted && c.IsActive, c => c.Articles); //or c => c == c.IsDeleted==false
+            var categories = await _unitOfWork.Categories.GetAllAsync(c => !c.IsDeleted && c.IsActive, c => c.Articles); //or c => c == c.IsDeleted == false
 
             if (categories.Count > -1)
                 return new DataResult<CategoryListDto>(ResultStatus.Success, new CategoryListDto
@@ -189,10 +187,35 @@ namespace MyBlog.Services.Concrete
 
                 return new DataResult<CategoryUpdateDto>(ResultStatus.Success, categoryUpdateDto);
             }
-
             else
             {
                 return new DataResult<CategoryUpdateDto>(ResultStatus.Error, message: Messages.Category.NotFound(isPlural: false), null);
+            }
+        }
+
+        public async Task<IDataResult<int>> Count()
+        {
+            var categoriesCount = await _unitOfWork.Categories.CountAsync();
+            if (categoriesCount > -1)
+            {
+                return new DataResult<int>(ResultStatus.Success, categoriesCount);
+            }
+            else
+            {
+                return new DataResult<int>(ResultStatus.Error, $"Beklenmeyen bir hata ile karşılaşıldı.", data: -1);
+            }
+        }
+
+        public async Task<IDataResult<int>> CountByIsDeleted()
+        {
+            var categoriesCount = await _unitOfWork.Categories.CountAsync(c => !c.IsDeleted);
+            if (categoriesCount > -1)
+            {
+                return new DataResult<int>(ResultStatus.Success, categoriesCount);
+            }
+            else
+            {
+                return new DataResult<int>(ResultStatus.Error, $"Beklenmeyen bir hata ile karşılaşıldı.", data: -1);
             }
         }
     }
